@@ -1,0 +1,1238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Project Settings — TriggersAPI</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              DEFAULT: '#FF4F00',
+              dark:    '#a93100',
+              light:   '#ff6a2b',
+              50:      '#fff3ee',
+              100:     '#ffe4d5',
+              200:     '#ffcaab',
+            },
+          },
+          fontFamily: {
+            sans:    ['Inter', 'sans-serif'],
+            display: ['Manrope', 'sans-serif'],
+          },
+        },
+      },
+    };
+  </script>
+
+  <style>
+    * { font-family: 'Inter', sans-serif; }
+    h1, h2, h3, h4, .font-display { font-family: 'Manrope', sans-serif; }
+
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      vertical-align: middle;
+    }
+    .material-symbols-outlined.filled {
+      font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #f1f5f9; }
+    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+    /* Sidebar */
+    .sidebar-link {
+      display: flex; align-items: center; gap: 10px;
+      padding: 9px 14px; border-radius: 10px;
+      font-size: 14px; font-weight: 500; color: #475569;
+      transition: background 0.15s, color 0.15s;
+      cursor: pointer; text-decoration: none;
+    }
+    .sidebar-link:hover { background: #f8fafc; color: #1e293b; }
+    .sidebar-link.active {
+      background: #fff3ee; color: #a93100; font-weight: 600;
+    }
+    .sidebar-link.active .material-symbols-outlined { color: #FF4F00; }
+
+    /* Top nav links */
+    .top-nav-link {
+      font-size: 13.5px; font-weight: 500; color: #64748b;
+      text-decoration: none; padding: 6px 12px; border-radius: 8px;
+      transition: background 0.15s, color 0.15s;
+    }
+    .top-nav-link:hover { background: #f1f5f9; color: #1e293b; }
+
+    /* Bento cards */
+    .bento-card {
+      background: #fff;
+      border: 1px solid #f1f5f9;
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+      transition: box-shadow 0.2s;
+    }
+    .bento-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.07); }
+
+    /* Form elements */
+    .form-label {
+      display: block;
+      font-size: 11px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.07em;
+      color: #94a3b8; margin-bottom: 6px;
+    }
+    .form-select {
+      width: 100%;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 10px 12px;
+      font-size: 13.5px; color: #1e293b;
+      outline: none;
+      transition: border-color 0.15s, box-shadow 0.15s;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%2394a3b8' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14L2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+      cursor: pointer;
+    }
+    .form-select:focus {
+      border-color: #FF4F00;
+      box-shadow: 0 0 0 3px rgba(255,79,0,0.1);
+      background-color: #fff;
+    }
+
+    /* Primary button */
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: 7px;
+      padding: 9px 18px;
+      background: linear-gradient(135deg, #FF4F00, #a93100);
+      color: #fff; border: none; border-radius: 10px;
+      font-size: 13.5px; font-weight: 600; cursor: pointer;
+      transition: opacity 0.15s, transform 0.1s;
+      font-family: inherit;
+    }
+    .btn-primary:hover { opacity: 0.88; }
+    .btn-primary:active { transform: scale(0.98); }
+    .btn-primary:disabled { opacity: 0.45; cursor: not-allowed; }
+
+    /* Secondary button */
+    .btn-secondary {
+      display: inline-flex; align-items: center; gap: 7px;
+      padding: 9px 18px;
+      background: #f8fafc; color: #475569;
+      border: 1px solid #e2e8f0; border-radius: 10px;
+      font-size: 13.5px; font-weight: 600; cursor: pointer;
+      transition: background 0.15s, border-color 0.15s;
+      font-family: inherit;
+    }
+    .btn-secondary:hover { background: #f1f5f9; border-color: #cbd5e1; color: #1e293b; }
+
+    /* Info row */
+    .info-row {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 10px 0;
+      border-bottom: 1px solid #f8fafc;
+      font-size: 13.5px;
+    }
+    .info-row:last-child { border-bottom: none; padding-bottom: 0; }
+    .info-row-label { color: #64748b; font-weight: 500; }
+    .info-row-value { color: #1e293b; font-weight: 600; font-family: 'Manrope', sans-serif; }
+
+    /* Status indicator dot */
+    .status-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      display: inline-block; flex-shrink: 0;
+    }
+    .status-dot.green  { background: #22c55e; box-shadow: 0 0 0 3px rgba(34,197,94,0.2); }
+    .status-dot.yellow { background: #f59e0b; box-shadow: 0 0 0 3px rgba(245,158,11,0.2); }
+    .status-dot.red    { background: #ef4444; box-shadow: 0 0 0 3px rgba(239,68,68,0.2); }
+    .status-dot.grey   { background: #94a3b8; }
+
+    /* Collapsible spec card */
+    #spec-body {
+      max-height: 0; overflow: hidden;
+      transition: max-height 0.4s cubic-bezier(0.4,0,0.2,1), opacity 0.3s;
+      opacity: 0;
+    }
+    #spec-body.open {
+      max-height: 2000px; opacity: 1;
+    }
+    #spec-chevron { transition: transform 0.3s; }
+    #spec-chevron.rotated { transform: rotate(180deg); }
+
+    /* Monospace code value */
+    .mono-value {
+      font-family: 'SF Mono', 'Fira Code', 'Fira Mono', monospace;
+      font-size: 12.5px; color: #334155;
+      background: #f8fafc; border: 1px solid #e2e8f0;
+      border-radius: 6px; padding: 2px 8px;
+      letter-spacing: 0.02em;
+    }
+
+    /* Cost table */
+    .cost-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    .cost-table th {
+      text-align: left; padding: 8px 12px;
+      font-size: 10.5px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.07em; color: #94a3b8;
+      border-bottom: 1px solid #f1f5f9; background: #f8fafc;
+    }
+    .cost-table td {
+      padding: 11px 12px;
+      border-bottom: 1px solid #f8fafc; color: #475569;
+      vertical-align: middle;
+    }
+    .cost-table tr:last-child td { border-bottom: none; }
+    .cost-table tbody tr:hover td { background: #f8fafc; }
+
+    /* Checklist item */
+    .check-item {
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 14px; border-radius: 10px;
+      background: #f8fafc; border: 1px solid #f1f5f9;
+      margin-bottom: 8px; font-size: 13.5px;
+    }
+    .check-item:last-child { margin-bottom: 0; }
+    .check-icon-ok   { color: #22c55e; }
+    .check-icon-warn { color: #f59e0b; }
+    .check-icon-err  { color: #ef4444; }
+
+    /* Skeleton */
+    .skeleton {
+      background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
+      background-size: 400% 100%;
+      animation: shimmer 1.4s infinite;
+      border-radius: 6px; display: inline-block;
+    }
+    @keyframes shimmer {
+      0%   { background-position: 100% 0; }
+      100% { background-position: -100% 0; }
+    }
+
+    /* Toast */
+    #toast {
+      position: fixed; bottom: 24px; right: 24px;
+      background: #1e293b; color: #f8fafc;
+      padding: 12px 20px; border-radius: 12px;
+      font-size: 13.5px; font-weight: 500;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+      transform: translateY(100px); opacity: 0;
+      transition: transform 0.3s cubic-bezier(0.4,0,0.2,1), opacity 0.3s;
+      z-index: 9999; display: flex; align-items: center; gap: 8px;
+    }
+    #toast.show { transform: translateY(0); opacity: 1; }
+    #toast.success { background: #166534; }
+    #toast.error   { background: #991b1b; }
+
+    #mobile-bottom-nav { display: none; }
+    @media (max-width: 768px) {
+      #sidebar { display: none; }
+      #mobile-bottom-nav { display: flex; }
+      #main-content { margin-left: 0 !important; }
+    }
+  </style>
+</head>
+<body class="bg-slate-50 min-h-screen">
+
+<!-- ============================================================
+     TOP NAV
+============================================================ -->
+<header class="fixed top-0 left-0 right-0 z-40 bg-white border-b border-slate-100 h-14 flex items-center px-4 md:px-6"
+        style="box-shadow:0 1px 3px rgba(0,0,0,0.06);">
+  <div class="flex items-center gap-2 w-56 shrink-0">
+    <div class="w-7 h-7 rounded-lg flex items-center justify-center"
+         style="background:linear-gradient(135deg,#FF4F00,#a93100);">
+      <span class="material-symbols-outlined filled text-white" style="font-size:16px;">bolt</span>
+    </div>
+    <span class="font-display font-extrabold text-slate-900 text-base tracking-tight">TriggersAPI</span>
+  </div>
+
+  <nav class="hidden md:flex items-center gap-1 ml-6">
+    <a href="/docs" class="top-nav-link">Docs</a>
+    <a href="#" class="top-nav-link">Support</a>
+    <a href="#" class="top-nav-link">Changelog</a>
+  </nav>
+
+  <div class="ml-auto flex items-center gap-3">
+    <span class="hidden sm:inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
+      <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse inline-block"></span>
+      Production
+    </span>
+    <button class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 hover:bg-slate-200 transition-colors">
+      <span class="material-symbols-outlined" style="font-size:18px;">notifications</span>
+    </button>
+    <div class="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold"
+         style="background:linear-gradient(135deg,#FF4F00,#a93100);">
+      D
+    </div>
+  </div>
+</header>
+
+<!-- ============================================================
+     SIDEBAR
+============================================================ -->
+<aside id="sidebar"
+       class="fixed top-14 left-0 bottom-0 w-56 bg-white border-r border-slate-100 flex flex-col z-30 overflow-y-auto"
+       style="box-shadow:1px 0 0 #f1f5f9;">
+  <!-- Hub label -->
+  <div class="px-4 pt-5 pb-3">
+    <div class="flex items-center gap-2 px-2 mb-1">
+      <span class="material-symbols-outlined text-brand" style="font-size:15px;">bolt</span>
+      <span class="text-xs font-semibold text-slate-400 uppercase tracking-widest">Developer Hub</span>
+    </div>
+    <div class="px-2">
+      <span class="text-xs text-slate-300 font-medium">v1.0.0</span>
+    </div>
+  </div>
+
+  <div class="h-px bg-slate-100 mx-4 mb-3"></div>
+
+  <!-- Nav links -->
+  <nav class="flex flex-col gap-1 px-3">
+    <a href="/" class="sidebar-link">
+      <span class="material-symbols-outlined filled" style="font-size:20px;">dashboard</span>
+      Dashboard
+    </a>
+    <a href="/explorer" class="sidebar-link">
+      <span class="material-symbols-outlined" style="font-size:20px;">manage_search</span>
+      Explorer
+    </a>
+    <a href="/api-reference" class="sidebar-link">
+      <span class="material-symbols-outlined" style="font-size:20px;">code</span>
+      API Reference
+    </a>
+    <a href="/subscriptions-page" class="sidebar-link">
+      <span class="material-symbols-outlined" style="font-size:20px;">webhook</span>
+      Subscriptions
+    </a>
+    <a href="/settings" class="sidebar-link active">
+      <span class="material-symbols-outlined filled" style="font-size:20px;">settings</span>
+      Project Settings
+    </a>
+  </nav>
+
+  <div class="h-px bg-slate-100 mx-4 my-4"></div>
+
+  <!-- Create Trigger CTA -->
+  <div class="px-3 pb-2">
+    <a href="/explorer"
+       class="flex items-center justify-center gap-2 w-full py-2.5 px-4 rounded-xl text-white text-sm font-semibold transition-all hover:opacity-90 active:scale-95"
+       style="background:linear-gradient(135deg,#FF4F00,#a93100); box-shadow:0 2px 8px rgba(255,79,0,0.3);">
+      <span class="material-symbols-outlined filled" style="font-size:18px;">add_circle</span>
+      Create Trigger
+    </a>
+  </div>
+
+  <div class="mt-auto px-3 pb-5 pt-4">
+    <div class="rounded-xl p-3 text-xs" style="background:#fff3ee; border:1px solid #ffcaab;">
+      <p class="font-semibold text-orange-800 mb-0.5">System Status</p>
+      <p id="sidebar-status" class="text-orange-600 flex items-center gap-1">
+        <span class="w-1.5 h-1.5 rounded-full bg-slate-300 inline-block" id="sidebar-dot"></span>
+        Checking…
+      </p>
+    </div>
+  </div>
+</aside>
+
+<!-- ============================================================
+     MAIN CONTENT
+============================================================ -->
+<main id="main-content" class="pt-14 md:ml-56 min-h-screen">
+  <div class="max-w-6xl mx-auto px-4 md:px-8 py-8 pb-24 md:pb-8">
+
+    <!-- Page header -->
+    <div class="flex items-center justify-between mb-8">
+      <div>
+        <h1 class="font-display text-2xl font-bold text-slate-900 mb-1">Project Settings</h1>
+        <p class="text-sm text-slate-500">Configure your TriggersAPI instance, LLM models, and integrations.</p>
+      </div>
+      <div class="hidden sm:flex items-center gap-2">
+        <span class="text-xs text-slate-400" id="health-label">Fetching status…</span>
+      </div>
+    </div>
+
+    <!-- ================================================================
+         ROW 1 — LLM Config (left) + System Info (right)
+    ================================================================ -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-4">
+
+      <!-- LLM Configuration Card -->
+      <div class="bento-card flex flex-col gap-5">
+        <div class="flex items-center gap-3 mb-1">
+          <div class="w-9 h-9 rounded-xl flex items-center justify-center shrink-0"
+               style="background:linear-gradient(135deg,#fff3ee,#ffe4d5);">
+            <span class="material-symbols-outlined filled text-brand" style="font-size:20px;">psychology</span>
+          </div>
+          <div>
+            <h2 class="font-display font-bold text-slate-900 text-base">LLM Configuration</h2>
+            <p class="text-xs text-slate-400">Choose and test the AI model for your API</p>
+          </div>
+        </div>
+
+        <!-- Model selector -->
+        <div>
+          <label class="form-label">Default Model</label>
+          <div class="relative">
+            <select id="model-select" class="form-select" onchange="onModelChange()">
+              <option value="">Loading models…</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Model detail row -->
+        <div id="model-detail" class="rounded-xl p-3 text-sm hidden" style="background:#f8fafc; border:1px solid #f1f5f9;">
+          <div class="flex items-center justify-between mb-2">
+            <span class="font-semibold text-slate-700 text-xs uppercase tracking-wider">Selected Model</span>
+            <span id="model-detail-name" class="text-xs font-medium text-brand bg-brand-50 px-2 py-0.5 rounded-full"></span>
+          </div>
+          <div class="grid grid-cols-2 gap-2 text-xs text-slate-600">
+            <div class="flex flex-col gap-0.5">
+              <span class="text-slate-400 font-medium">Input cost</span>
+              <span id="model-input-cost" class="font-semibold text-slate-700">—</span>
+            </div>
+            <div class="flex flex-col gap-0.5">
+              <span class="text-slate-400 font-medium">Output cost</span>
+              <span id="model-output-cost" class="font-semibold text-slate-700">—</span>
+            </div>
+          </div>
+          <div class="mt-3 pt-3 border-t border-slate-200">
+            <span class="text-slate-400 text-xs font-medium">Est. cost per conversation (~500 in / ~300 out tokens)</span>
+            <p id="est-cost" class="text-sm font-bold text-slate-800 mt-0.5">—</p>
+          </div>
+        </div>
+
+        <!-- Test model -->
+        <div class="flex items-center gap-3 mt-auto">
+          <button id="test-btn" onclick="testModel()" class="btn-primary" disabled>
+            <span class="material-symbols-outlined filled" style="font-size:17px;">play_circle</span>
+            Test Model
+          </button>
+          <div id="test-status" class="text-xs text-slate-500 hidden"></div>
+        </div>
+
+        <!-- Test result -->
+        <div id="test-result" class="hidden rounded-xl p-3 text-xs font-mono text-slate-600"
+             style="background:#f8fafc; border:1px solid #f1f5f9; white-space:pre-wrap; max-height:120px; overflow-y:auto; line-height:1.6;">
+        </div>
+      </div>
+
+      <!-- System Information Card -->
+      <div class="bento-card flex flex-col gap-1">
+        <div class="flex items-center gap-3 mb-3">
+          <div class="w-9 h-9 rounded-xl flex items-center justify-center shrink-0"
+               style="background:#f0fdf4;">
+            <span class="material-symbols-outlined filled text-emerald-500" style="font-size:20px;">monitoring</span>
+          </div>
+          <div>
+            <h2 class="font-display font-bold text-slate-900 text-base">System Information</h2>
+            <p class="text-xs text-slate-400">Runtime details and delivery guarantees</p>
+          </div>
+        </div>
+
+        <div class="info-row">
+          <span class="info-row-label">API Version</span>
+          <span class="info-row-value mono-value">1.0.0</span>
+        </div>
+        <div class="info-row">
+          <span class="info-row-label">Environment</span>
+          <span class="inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
+            <span class="status-dot green"></span>
+            Production
+          </span>
+        </div>
+        <div class="info-row">
+          <span class="info-row-label">Database</span>
+          <span class="info-row-value">SQLite <span class="text-slate-400 font-normal text-xs">(WAL mode)</span></span>
+        </div>
+        <div class="info-row">
+          <span class="info-row-label">Delivery Model</span>
+          <span class="info-row-value">At-least-once</span>
+        </div>
+        <div class="info-row">
+          <span class="info-row-label">Retry Strategy</span>
+          <span class="info-row-value text-right text-xs leading-relaxed">
+            Exponential backoff<br>
+            <span class="text-slate-400 font-normal">1s · 2s · 4s · 8s · 16s</span>
+          </span>
+        </div>
+
+        <div class="mt-3 pt-3 border-t border-slate-100">
+          <div class="flex items-center gap-2 mb-2">
+            <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Health Check</span>
+          </div>
+          <div id="health-block" class="rounded-xl p-3 text-xs" style="background:#f8fafc; border:1px solid #f1f5f9;">
+            <div class="flex items-center gap-2">
+              <span class="skeleton w-2 h-2 rounded-full">&nbsp;</span>
+              <span class="skeleton w-28 h-3">&nbsp;</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================================================================
+         ROW 2 — Project Specification (full width, collapsible)
+    ================================================================ -->
+    <div class="bento-card mb-4">
+      <button onclick="toggleSpec()" class="w-full flex items-center justify-between gap-3 text-left">
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-xl flex items-center justify-center shrink-0"
+               style="background:#eff6ff;">
+            <span class="material-symbols-outlined filled text-blue-500" style="font-size:20px;">description</span>
+          </div>
+          <div>
+            <h2 class="font-display font-bold text-slate-900 text-base">Project Specification</h2>
+            <p class="text-xs text-slate-400">Full technical overview of TriggersAPI</p>
+          </div>
+        </div>
+        <span class="material-symbols-outlined text-slate-400" id="spec-chevron" style="font-size:22px;">expand_more</span>
+      </button>
+
+      <div id="spec-body">
+        <div class="mt-5 pt-5 border-t border-slate-100 prose prose-sm max-w-none text-slate-600 text-sm leading-relaxed space-y-4">
+          <div class="rounded-xl p-4" style="background:#fff3ee; border:1px solid #ffcaab;">
+            <p class="font-semibold text-orange-800 text-sm mb-1">TriggersAPI — Webhook Event Bus</p>
+            <p class="text-orange-700 text-xs">A lightweight, production-ready event ingestion and delivery platform built with FastAPI and SQLite.</p>
+          </div>
+
+          <div>
+            <h3 class="font-display font-semibold text-slate-800 text-sm mb-2">Overview</h3>
+            <p class="text-slate-600 text-sm">TriggersAPI is a webhook event bus that decouples event producers from event consumers. It provides a structured pipeline for ingesting, queuing, and reliably delivering events to registered HTTP subscribers.</p>
+          </div>
+
+          <div>
+            <h3 class="font-display font-semibold text-slate-800 text-sm mb-2">Event Lifecycle</h3>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <div class="rounded-lg p-3" style="background:#f8fafc; border:1px solid #f1f5f9;">
+                <div class="flex items-center gap-2 mb-1">
+                  <span class="material-symbols-outlined filled text-blue-400" style="font-size:16px;">input</span>
+                  <span class="font-semibold text-slate-700 text-xs">1. Ingest</span>
+                </div>
+                <p class="text-xs text-slate-500">Events arrive via <code class="bg-slate-200 rounded px-1">POST /api/v1/events/{trigger_id}</code>. Each event is assigned a UUID, timestamped, and persisted to SQLite in WAL mode.</p>
+              </div>
+              <div class="rounded-lg p-3" style="background:#f8fafc; border:1px solid #f1f5f9;">
+                <div class="flex items-center gap-2 mb-1">
+                  <span class="material-symbols-outlined filled text-amber-400" style="font-size:16px;">sync</span>
+                  <span class="font-semibold text-slate-700 text-xs">2. Queue</span>
+                </div>
+                <p class="text-xs text-slate-500">The background delivery worker polls for queued events and fan-outs to all active subscriptions. Pending deliveries are tracked with status.</p>
+              </div>
+              <div class="rounded-lg p-3" style="background:#f8fafc; border:1px solid #f1f5f9;">
+                <div class="flex items-center gap-2 mb-1">
+                  <span class="material-symbols-outlined filled text-emerald-500" style="font-size:16px;">send</span>
+                  <span class="font-semibold text-slate-700 text-xs">3. Deliver</span>
+                </div>
+                <p class="text-xs text-slate-500">Events are POSTed to subscriber webhook URLs. Failed deliveries are retried with exponential backoff (1s, 2s, 4s, 8s, 16s). At-least-once guarantee.</p>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <h3 class="font-display font-semibold text-slate-800 text-sm mb-2">Subscription Model</h3>
+            <p class="text-slate-600 text-sm">Subscribers register a webhook URL and optionally filter by trigger ID or event type. Each subscription can be independently paused, resumed, or deleted. The system supports fan-out to multiple subscribers per trigger, enabling pub/sub patterns.</p>
+          </div>
+
+          <div>
+            <h3 class="font-display font-semibold text-slate-800 text-sm mb-2">AI Integration</h3>
+            <p class="text-slate-600 text-sm">TriggersAPI includes an AI chat layer powered by OpenRouter. The <code class="bg-slate-100 rounded px-1 font-mono text-xs">POST /api/v1/chat</code> endpoint routes to the configured LLM model with optional Langfuse observability tracing. Conversation context is maintained per session.</p>
+          </div>
+
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            <div class="rounded-lg p-3 text-center" style="background:#f0fdf4; border:1px solid #bbf7d0;">
+              <p class="font-display font-bold text-emerald-700 text-lg">At-Least-Once</p>
+              <p class="text-xs text-emerald-600">Delivery guarantee</p>
+            </div>
+            <div class="rounded-lg p-3 text-center" style="background:#eff6ff; border:1px solid #bfdbfe;">
+              <p class="font-display font-bold text-blue-700 text-lg">WAL Mode</p>
+              <p class="text-xs text-blue-600">SQLite durability</p>
+            </div>
+            <div class="rounded-lg p-3 text-center" style="background:#fff3ee; border:1px solid #ffcaab;">
+              <p class="font-display font-bold text-orange-700 text-lg">5 Retries</p>
+              <p class="text-xs text-orange-600">Max retry attempts</p>
+            </div>
+            <div class="rounded-lg p-3 text-center" style="background:#faf5ff; border:1px solid #e9d5ff;">
+              <p class="font-display font-bold text-purple-700 text-lg">OpenRouter</p>
+              <p class="text-xs text-purple-600">LLM gateway</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================================================================
+         ROW 3 — AI Observability (left) + Cost Dashboard (right)
+    ================================================================ -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-4">
+
+      <!-- AI Observability Card -->
+      <div class="bento-card flex flex-col gap-4">
+        <div class="flex items-center gap-3 mb-1">
+          <div class="w-9 h-9 rounded-xl flex items-center justify-center shrink-0"
+               style="background:#faf5ff;">
+            <span class="material-symbols-outlined filled text-purple-500" style="font-size:20px;">troubleshoot</span>
+          </div>
+          <div>
+            <h2 class="font-display font-bold text-slate-900 text-base">AI Observability</h2>
+            <p class="text-xs text-slate-400">Langfuse tracing for LLM calls</p>
+          </div>
+        </div>
+
+        <div id="langfuse-status-block" class="rounded-xl p-4" style="background:#f8fafc; border:1px solid #f1f5f9;">
+          <div class="flex items-center justify-between mb-3">
+            <div class="flex items-center gap-2">
+              <span id="langfuse-dot" class="status-dot grey"></span>
+              <span id="langfuse-label" class="text-sm font-semibold text-slate-700">Checking Langfuse…</span>
+            </div>
+            <a href="https://us.cloud.langfuse.com" target="_blank" rel="noopener"
+               class="text-xs font-medium text-brand hover:underline flex items-center gap-1">
+              Dashboard
+              <span class="material-symbols-outlined" style="font-size:13px;">open_in_new</span>
+            </a>
+          </div>
+          <p id="langfuse-desc" class="text-xs text-slate-500 leading-relaxed">
+            LLM traces are automatically captured when Langfuse is configured. Each chat request creates a trace with input tokens, output tokens, model used, and latency.
+          </p>
+        </div>
+
+        <div class="rounded-xl p-3 text-xs text-slate-600" style="background:#f8fafc; border:1px solid #f1f5f9;">
+          <div class="flex items-start gap-2">
+            <span class="material-symbols-outlined text-slate-400" style="font-size:15px;">info</span>
+            <span>Set <code class="bg-slate-200 rounded px-1 font-mono">LANGFUSE_PUBLIC_KEY</code>, <code class="bg-slate-200 rounded px-1 font-mono">LANGFUSE_SECRET_KEY</code>, and <code class="bg-slate-200 rounded px-1 font-mono">LANGFUSE_HOST</code> in your environment to enable tracing.</span>
+          </div>
+        </div>
+
+        <a href="https://us.cloud.langfuse.com" target="_blank" rel="noopener"
+           class="btn-secondary w-fit">
+          <span class="material-symbols-outlined filled" style="font-size:17px;">open_in_new</span>
+          View Traces
+        </a>
+      </div>
+
+      <!-- Cost Dashboard Card -->
+      <div class="bento-card flex flex-col gap-4">
+        <div class="flex items-center gap-3 mb-1">
+          <div class="w-9 h-9 rounded-xl flex items-center justify-center shrink-0"
+               style="background:#fefce8;">
+            <span class="material-symbols-outlined filled text-amber-500" style="font-size:20px;">payments</span>
+          </div>
+          <div>
+            <h2 class="font-display font-bold text-slate-900 text-base">Cost Dashboard</h2>
+            <p class="text-xs text-slate-400">Estimated spend for your deployment</p>
+          </div>
+        </div>
+
+        <div class="overflow-x-auto rounded-xl" style="border:1px solid #f1f5f9;">
+          <table class="cost-table">
+            <thead>
+              <tr>
+                <th>Model</th>
+                <th>Input / 1M</th>
+                <th>Output / 1M</th>
+              </tr>
+            </thead>
+            <tbody id="cost-table-body">
+              <tr>
+                <td colspan="3" class="text-center text-slate-400 py-6">
+                  <span class="skeleton inline-block w-40 h-4">&nbsp;</span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="space-y-2">
+          <div class="info-row" style="padding:8px 0;">
+            <span class="info-row-label text-xs">LLM API Spend (est.)</span>
+            <span id="llm-spend-est" class="info-row-value text-sm">—</span>
+          </div>
+          <div class="info-row" style="padding:8px 0;">
+            <span class="info-row-label text-xs">Hosting</span>
+            <span class="info-row-value text-sm">Railway</span>
+          </div>
+          <div class="info-row" style="padding:8px 0; border-top:2px solid #f1f5f9; margin-top:4px;">
+            <span class="font-semibold text-slate-700 text-sm">Est. Monthly Total</span>
+            <span id="monthly-total" class="font-display font-bold text-slate-900 text-base">—</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================================================================
+         ROW 4 — Quick Configuration (full width)
+    ================================================================ -->
+    <div class="bento-card">
+      <div class="flex items-center gap-3 mb-5">
+        <div class="w-9 h-9 rounded-xl flex items-center justify-center shrink-0"
+             style="background:#f0fdf4;">
+          <span class="material-symbols-outlined filled text-emerald-500" style="font-size:20px;">key</span>
+        </div>
+        <div>
+          <h2 class="font-display font-bold text-slate-900 text-base">Quick Configuration</h2>
+          <p class="text-xs text-slate-400">API credentials, base URL, and environment variable status</p>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- Left — API Key + Base URL -->
+        <div class="space-y-4">
+          <!-- API Key -->
+          <div>
+            <label class="form-label">API Key</label>
+            <div class="flex items-center gap-2">
+              <div class="flex-1 flex items-center rounded-xl border border-slate-200 bg-slate-50 overflow-hidden"
+                   style="font-family:'SF Mono','Fira Code',monospace; font-size:12.5px;">
+                <span id="api-key-display" class="flex-1 px-3 py-2.5 text-slate-500 select-all truncate">
+                  sk-••••••••••••••••••••••••••••••••••
+                </span>
+                <button onclick="toggleApiKey()" id="api-key-reveal-btn"
+                        class="px-3 py-2.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-colors border-l border-slate-200">
+                  <span class="material-symbols-outlined" id="api-key-eye" style="font-size:18px;">visibility</span>
+                </button>
+                <button onclick="copyApiKey()"
+                        class="px-3 py-2.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-colors border-l border-slate-200">
+                  <span class="material-symbols-outlined" style="font-size:18px;">content_copy</span>
+                </button>
+              </div>
+            </div>
+            <p class="text-xs text-slate-400 mt-1.5">Pass as <code class="bg-slate-100 rounded px-1 font-mono">X-API-Key</code> header or <code class="bg-slate-100 rounded px-1 font-mono">?api_key=</code> query param.</p>
+          </div>
+
+          <!-- Base URL -->
+          <div>
+            <label class="form-label">Base URL</label>
+            <div class="flex items-center rounded-xl border border-slate-200 bg-slate-50 overflow-hidden">
+              <span id="base-url-display"
+                    class="flex-1 px-3 py-2.5 text-slate-700 text-sm font-mono truncate select-all">
+                Loading…
+              </span>
+              <button onclick="copyBaseUrl()"
+                      class="px-3 py-2.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-colors border-l border-slate-200">
+                <span class="material-symbols-outlined" style="font-size:18px;">content_copy</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right — Env var checklist -->
+        <div>
+          <label class="form-label">Environment Variables</label>
+          <div id="env-checklist">
+            <div class="check-item">
+              <span class="skeleton w-4 h-4 rounded-full shrink-0">&nbsp;</span>
+              <span class="skeleton w-48 h-4">&nbsp;</span>
+            </div>
+            <div class="check-item">
+              <span class="skeleton w-4 h-4 rounded-full shrink-0">&nbsp;</span>
+              <span class="skeleton w-40 h-4">&nbsp;</span>
+            </div>
+            <div class="check-item">
+              <span class="skeleton w-4 h-4 rounded-full shrink-0">&nbsp;</span>
+              <span class="skeleton w-44 h-4">&nbsp;</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /max-w -->
+</main>
+
+<!-- Mobile bottom nav -->
+<nav id="mobile-bottom-nav"
+     class="fixed bottom-0 left-0 right-0 z-40 bg-white border-t border-slate-100 px-2 py-2"
+     style="box-shadow:0 -1px 4px rgba(0,0,0,0.06);">
+  <div class="flex justify-around">
+    <a href="/" class="flex flex-col items-center gap-0.5 px-3 py-1 text-slate-400">
+      <span class="material-symbols-outlined" style="font-size:22px;">dashboard</span>
+      <span class="text-xs">Dashboard</span>
+    </a>
+    <a href="/explorer" class="flex flex-col items-center gap-0.5 px-3 py-1 text-slate-400">
+      <span class="material-symbols-outlined" style="font-size:22px;">manage_search</span>
+      <span class="text-xs">Explorer</span>
+    </a>
+    <a href="/subscriptions-page" class="flex flex-col items-center gap-0.5 px-3 py-1 text-slate-400">
+      <span class="material-symbols-outlined" style="font-size:22px;">webhook</span>
+      <span class="text-xs">Subs</span>
+    </a>
+    <a href="/settings" class="flex flex-col items-center gap-0.5 px-3 py-1 text-brand">
+      <span class="material-symbols-outlined filled" style="font-size:22px;">settings</span>
+      <span class="text-xs font-semibold">Settings</span>
+    </a>
+  </div>
+</nav>
+
+<!-- Toast -->
+<div id="toast">
+  <span class="material-symbols-outlined" style="font-size:17px;" id="toast-icon">check_circle</span>
+  <span id="toast-msg">Done</span>
+</div>
+
+<!-- ============================================================
+     JAVASCRIPT
+============================================================ -->
+<script>
+  /* ──────────────────────────────────────────
+     CONSTANTS
+  ────────────────────────────────────────── */
+  const BASE_URL = window.location.origin;
+  const LS_MODEL_KEY = 'selectedModel';
+  const FAKE_API_KEY = 'sk-triggers-demo-key-1234567890abcdef';
+
+  let allModels = [];
+  let apiKeyRevealed = false;
+
+  /* ──────────────────────────────────────────
+     TOAST
+  ────────────────────────────────────────── */
+  function showToast(msg, type = 'default') {
+    const t = document.getElementById('toast');
+    const icon = document.getElementById('toast-icon');
+    const msgEl = document.getElementById('toast-msg');
+    t.className = '';
+    t.classList.add('show');
+    if (type === 'success') { t.classList.add('success'); icon.textContent = 'check_circle'; }
+    else if (type === 'error') { t.classList.add('error'); icon.textContent = 'error'; }
+    else { icon.textContent = 'info'; }
+    msgEl.textContent = msg;
+    setTimeout(() => t.classList.remove('show'), 3000);
+  }
+
+  /* ──────────────────────────────────────────
+     HEALTH CHECK
+  ────────────────────────────────────────── */
+  async function fetchHealth() {
+    try {
+      const res = await fetch(`${BASE_URL}/health`);
+      const data = await res.json();
+
+      const status = data.status || 'unknown';
+      const isOk = status === 'ok' || status === 'healthy';
+
+      // Health block
+      const hb = document.getElementById('health-block');
+      hb.innerHTML = `
+        <div class="space-y-1.5">
+          <div class="flex items-center gap-2">
+            <span class="status-dot ${isOk ? 'green' : 'yellow'}"></span>
+            <span class="font-semibold text-slate-700">${isOk ? 'All systems operational' : 'Degraded'}</span>
+          </div>
+          ${data.version ? `<div class="text-slate-400">Version: <span class="font-medium text-slate-600">${data.version}</span></div>` : ''}
+          ${data.uptime_seconds != null ? `<div class="text-slate-400">Uptime: <span class="font-medium text-slate-600">${formatUptime(data.uptime_seconds)}</span></div>` : ''}
+          ${data.database ? `<div class="text-slate-400">DB: <span class="font-medium text-slate-600">${data.database}</span></div>` : ''}
+        </div>
+      `;
+
+      // Top bar label
+      document.getElementById('health-label').textContent = isOk ? 'All systems operational' : 'Degraded';
+
+      // Sidebar
+      const dot = document.getElementById('sidebar-dot');
+      const lbl = document.getElementById('sidebar-status');
+      if (isOk) {
+        dot.className = 'w-1.5 h-1.5 rounded-full bg-emerald-500 inline-block';
+        lbl.textContent = 'All systems operational';
+      } else {
+        dot.className = 'w-1.5 h-1.5 rounded-full bg-amber-400 inline-block';
+        lbl.textContent = 'Degraded';
+      }
+    } catch (e) {
+      document.getElementById('health-block').innerHTML = `
+        <div class="flex items-center gap-2">
+          <span class="status-dot red"></span>
+          <span class="text-slate-600 font-medium">Health check failed</span>
+        </div>
+        <p class="text-slate-400 mt-1">Could not reach <code class="bg-slate-200 rounded px-1 font-mono">/health</code></p>
+      `;
+      document.getElementById('health-label').textContent = 'Health check failed';
+      document.getElementById('sidebar-status').textContent = 'Unreachable';
+    }
+  }
+
+  function formatUptime(s) {
+    if (s < 60) return `${s}s`;
+    if (s < 3600) return `${Math.floor(s/60)}m ${s%60}s`;
+    const h = Math.floor(s / 3600);
+    const m = Math.floor((s % 3600) / 60);
+    return `${h}h ${m}m`;
+  }
+
+  /* ──────────────────────────────────────────
+     MODELS
+  ────────────────────────────────────────── */
+  async function fetchModels() {
+    try {
+      const res = await fetch(`${BASE_URL}/api/v1/chat/models`);
+      const data = await res.json();
+      allModels = Array.isArray(data) ? data : (data.models || data.data || []);
+
+      const sel = document.getElementById('model-select');
+      sel.innerHTML = '';
+
+      if (allModels.length === 0) {
+        sel.innerHTML = '<option value="">No models available</option>';
+        return;
+      }
+
+      allModels.forEach(m => {
+        const opt = document.createElement('option');
+        const id = m.id || m.model || m.name || '';
+        const name = m.name || m.id || id;
+        const inputCost = m.pricing?.prompt != null
+          ? `$${(parseFloat(m.pricing.prompt) * 1_000_000).toFixed(2)}/1M`
+          : (m.input_cost_per_1m != null ? `$${m.input_cost_per_1m}/1M` : '');
+        const label = inputCost ? `${name} — ${inputCost} in` : name;
+        opt.value = id;
+        opt.textContent = label;
+        sel.appendChild(opt);
+      });
+
+      // Restore saved model
+      const saved = localStorage.getItem(LS_MODEL_KEY);
+      if (saved && allModels.find(m => (m.id || m.model || m.name) === saved)) {
+        sel.value = saved;
+      }
+
+      onModelChange();
+      document.getElementById('test-btn').disabled = false;
+
+      // Populate cost table
+      buildCostTable();
+      buildCostEstimates();
+
+    } catch (e) {
+      const sel = document.getElementById('model-select');
+      sel.innerHTML = '<option value="">Failed to load models</option>';
+      document.getElementById('cost-table-body').innerHTML = `
+        <tr><td colspan="3" class="text-center text-slate-400 py-4 text-xs">Could not fetch model list</td></tr>
+      `;
+    }
+  }
+
+  function onModelChange() {
+    const sel = document.getElementById('model-select');
+    const modelId = sel.value;
+    if (!modelId) return;
+
+    localStorage.setItem(LS_MODEL_KEY, modelId);
+
+    const model = allModels.find(m => (m.id || m.model || m.name) === modelId);
+    if (!model) return;
+
+    const inputCostRaw  = model.pricing?.prompt    ?? model.input_cost_per_1m  ?? null;
+    const outputCostRaw = model.pricing?.completion ?? model.output_cost_per_1m ?? null;
+
+    const toPerMillion = (v) => {
+      if (v == null) return null;
+      const n = parseFloat(v);
+      // OpenRouter pricing is per token, so multiply by 1M
+      return n < 0.01 ? n * 1_000_000 : n;
+    };
+
+    const inputCostPer1M  = toPerMillion(inputCostRaw);
+    const outputCostPer1M = toPerMillion(outputCostRaw);
+
+    const detail = document.getElementById('model-detail');
+    detail.classList.remove('hidden');
+    document.getElementById('model-detail-name').textContent = model.name || modelId;
+    document.getElementById('model-input-cost').textContent  = inputCostPer1M  != null ? `$${inputCostPer1M.toFixed(4)}/1M tokens` : 'N/A';
+    document.getElementById('model-output-cost').textContent = outputCostPer1M != null ? `$${outputCostPer1M.toFixed(4)}/1M tokens` : 'N/A';
+
+    // Estimate: 500 input + 300 output tokens
+    if (inputCostPer1M != null && outputCostPer1M != null) {
+      const est = (500 / 1_000_000 * inputCostPer1M) + (300 / 1_000_000 * outputCostPer1M);
+      document.getElementById('est-cost').textContent = `~$${est.toFixed(6)}`;
+    } else {
+      document.getElementById('est-cost').textContent = 'N/A';
+    }
+  }
+
+  function buildCostTable() {
+    const tbody = document.getElementById('cost-table-body');
+    if (allModels.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="3" class="text-center text-slate-400 py-4 text-xs">No models</td></tr>';
+      return;
+    }
+
+    const toPerM = (v) => {
+      if (v == null) return '—';
+      const n = parseFloat(v);
+      const perM = n < 0.01 ? n * 1_000_000 : n;
+      return `$${perM.toFixed(4)}`;
+    };
+
+    tbody.innerHTML = allModels.slice(0, 8).map(m => {
+      const id = m.id || m.model || m.name || '';
+      const name = m.name || id;
+      const inp = toPerM(m.pricing?.prompt ?? m.input_cost_per_1m ?? null);
+      const out = toPerM(m.pricing?.completion ?? m.output_cost_per_1m ?? null);
+      const saved = localStorage.getItem(LS_MODEL_KEY);
+      const isSelected = saved === id;
+      return `
+        <tr>
+          <td>
+            <div class="flex items-center gap-2">
+              ${isSelected ? '<span class="w-1.5 h-1.5 rounded-full bg-brand inline-block shrink-0"></span>' : '<span class="w-1.5 h-1.5 rounded-full bg-slate-200 inline-block shrink-0"></span>'}
+              <span class="font-medium text-slate-700 text-xs">${name}</span>
+            </div>
+          </td>
+          <td class="font-mono text-xs text-slate-600">${inp}</td>
+          <td class="font-mono text-xs text-slate-600">${out}</td>
+        </tr>
+      `;
+    }).join('');
+  }
+
+  function buildCostEstimates() {
+    // Assume ~1000 conversations/month for estimate
+    const conversations = 1000;
+    const inputTokens  = conversations * 500;
+    const outputTokens = conversations * 300;
+
+    const sel = document.getElementById('model-select');
+    const modelId = sel.value;
+    const model = allModels.find(m => (m.id || m.model || m.name) === modelId);
+
+    let llmSpend = '—';
+    let total = '~$5–20 / mo';
+
+    if (model) {
+      const inputRaw  = model.pricing?.prompt    ?? model.input_cost_per_1m  ?? null;
+      const outputRaw = model.pricing?.completion ?? model.output_cost_per_1m ?? null;
+      if (inputRaw != null && outputRaw != null) {
+        const inp = parseFloat(inputRaw);
+        const out = parseFloat(outputRaw);
+        const inPerM  = inp < 0.01 ? inp * 1_000_000 : inp;
+        const outPerM = out < 0.01 ? out * 1_000_000 : out;
+        const spend = (inputTokens / 1_000_000 * inPerM) + (outputTokens / 1_000_000 * outPerM);
+        llmSpend = `~$${spend.toFixed(4)} / 1k conv`;
+        total = `~$${(spend + 5).toFixed(2)} / mo`;
+      }
+    }
+
+    document.getElementById('llm-spend-est').textContent = llmSpend;
+    document.getElementById('monthly-total').textContent = total;
+  }
+
+  /* ──────────────────────────────────────────
+     TEST MODEL
+  ────────────────────────────────────────── */
+  async function testModel() {
+    const btn = document.getElementById('test-btn');
+    const statusEl = document.getElementById('test-status');
+    const resultEl = document.getElementById('test-result');
+    const sel = document.getElementById('model-select');
+    const modelId = sel.value;
+
+    if (!modelId) { showToast('No model selected', 'error'); return; }
+
+    btn.disabled = true;
+    btn.innerHTML = `<span class="material-symbols-outlined" style="font-size:17px; animation:spin 0.8s linear infinite;">sync</span> Testing…`;
+    statusEl.classList.add('hidden');
+    resultEl.classList.add('hidden');
+
+    const payload = {
+      message: 'Hello! Please respond with one sentence confirming you are working correctly.',
+      model: modelId,
+      session_id: `settings-test-${Date.now()}`,
+    };
+
+    try {
+      const start = Date.now();
+      const res = await fetch(`${BASE_URL}/api/v1/chat`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+
+      const elapsed = Date.now() - start;
+      const data = await res.json();
+
+      if (!res.ok) throw new Error(data.detail || data.error || `HTTP ${res.status}`);
+
+      const reply = data.response || data.message || data.content || JSON.stringify(data);
+      resultEl.classList.remove('hidden');
+      resultEl.textContent = reply;
+      statusEl.classList.remove('hidden');
+      statusEl.innerHTML = `<span class="text-emerald-600 font-medium">Response in ${elapsed}ms</span>`;
+      showToast('Model test successful', 'success');
+    } catch (err) {
+      resultEl.classList.remove('hidden');
+      resultEl.textContent = `Error: ${err.message}`;
+      resultEl.style.color = '#ef4444';
+      statusEl.classList.remove('hidden');
+      statusEl.innerHTML = `<span class="text-red-500 font-medium">Test failed</span>`;
+      showToast('Model test failed', 'error');
+    } finally {
+      btn.disabled = false;
+      btn.innerHTML = `<span class="material-symbols-outlined filled" style="font-size:17px;">play_circle</span> Test Model`;
+    }
+  }
+
+  /* ──────────────────────────────────────────
+     LANGFUSE STATUS
+  ────────────────────────────────────────── */
+  async function checkLangfuse() {
+    // Try to detect via health or a dedicated endpoint
+    try {
+      const res = await fetch(`${BASE_URL}/health`);
+      const data = await res.json();
+
+      const dot   = document.getElementById('langfuse-dot');
+      const label = document.getElementById('langfuse-label');
+      const desc  = document.getElementById('langfuse-desc');
+
+      const hasLangfuse = data.langfuse === true
+        || data.langfuse_configured === true
+        || data.observability === 'langfuse'
+        || typeof data.langfuse === 'object';
+
+      if (hasLangfuse) {
+        dot.className = 'status-dot green';
+        label.textContent = 'Langfuse Connected';
+        desc.textContent = 'Traces are being captured. Visit your Langfuse dashboard to view LLM call details, token usage, latency, and cost breakdowns.';
+      } else {
+        dot.className = 'status-dot yellow';
+        label.textContent = 'Langfuse Not Configured';
+        desc.textContent = 'Langfuse tracing is not active. Set LANGFUSE_PUBLIC_KEY, LANGFUSE_SECRET_KEY, and LANGFUSE_HOST environment variables to enable it.';
+      }
+    } catch (e) {
+      document.getElementById('langfuse-dot').className = 'status-dot grey';
+      document.getElementById('langfuse-label').textContent = 'Status Unknown';
+    }
+  }
+
+  /* ──────────────────────────────────────────
+     BASE URL
+  ────────────────────────────────────────── */
+  function setBaseUrl() {
+    document.getElementById('base-url-display').textContent = BASE_URL;
+  }
+
+  /* ──────────────────────────────────────────
+     API KEY REVEAL
+  ────────────────────────────────────────── */
+  function toggleApiKey() {
+    apiKeyRevealed = !apiKeyRevealed;
+    const display = document.getElementById('api-key-display');
+    const eye     = document.getElementById('api-key-eye');
+    if (apiKeyRevealed) {
+      display.textContent = FAKE_API_KEY;
+      eye.textContent = 'visibility_off';
+      display.classList.remove('text-slate-500');
+      display.classList.add('text-slate-800');
+    } else {
+      display.textContent = 'sk-••••••••••••••••••••••••••••••••••';
+      eye.textContent = 'visibility';
+      display.classList.add('text-slate-500');
+      display.classList.remove('text-slate-800');
+    }
+  }
+
+  function copyApiKey() {
+    navigator.clipboard.writeText(FAKE_API_KEY).then(() => showToast('API key copied', 'success'));
+  }
+
+  function copyBaseUrl() {
+    navigator.clipboard.writeText(BASE_URL).then(() => showToast('Base URL copied', 'success'));
+  }
+
+  /* ──────────────────────────────────────────
+     ENV CHECKLIST
+  ────────────────────────────────────────── */
+  async function buildEnvChecklist() {
+    // Infer from health + model availability
+    let openrouterOk   = false;
+    let langfuseOk     = false;
+    let databaseOk     = false;
+
+    try {
+      const res  = await fetch(`${BASE_URL}/health`);
+      const data = await res.json();
+      databaseOk = (data.status === 'ok' || data.status === 'healthy');
+      langfuseOk = data.langfuse === true || data.langfuse_configured === true || typeof data.langfuse === 'object';
+    } catch (_) {}
+
+    try {
+      const res = await fetch(`${BASE_URL}/api/v1/chat/models`);
+      if (res.ok) openrouterOk = true;
+    } catch (_) {}
+
+    const items = [
+      {
+        label: 'OPENROUTER_API_KEY',
+        desc: 'Required for LLM model access via OpenRouter',
+        ok: openrouterOk,
+      },
+      {
+        label: 'LANGFUSE_*',
+        desc: 'Optional — enables AI observability tracing',
+        ok: langfuseOk,
+        optional: true,
+      },
+      {
+        label: 'DATABASE (SQLite)',
+        desc: 'Persistence layer — active',
+        ok: databaseOk,
+      },
+    ];
+
+    const el = document.getElementById('env-checklist');
+    el.innerHTML = items.map(item => {
+      const iconClass = item.ok ? 'check-icon-ok' : (item.optional ? 'check-icon-warn' : 'check-icon-err');
+      const icon      = item.ok ? 'check_circle' : (item.optional ? 'info' : 'cancel');
+      const statusText = item.ok ? 'Configured' : (item.optional ? 'Optional' : 'Missing');
+      return `
+        <div class="check-item">
+          <span class="material-symbols-outlined filled ${iconClass}" style="font-size:18px; shrink:0;">${icon}</span>
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center justify-between gap-2">
+              <span class="font-mono text-xs font-semibold text-slate-700 truncate">${item.label}</span>
+              <span class="text-xs font-medium shrink-0 ${item.ok ? 'text-emerald-600' : (item.optional ? 'text-amber-500' : 'text-red-500')}">${statusText}</span>
+            </div>
+            <p class="text-xs text-slate-400 mt-0.5">${item.desc}</p>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  /* ──────────────────────────────────────────
+     SPEC TOGGLE
+  ────────────────────────────────────────── */
+  function toggleSpec() {
+    const body    = document.getElementById('spec-body');
+    const chevron = document.getElementById('spec-chevron');
+    body.classList.toggle('open');
+    chevron.classList.toggle('rotated');
+  }
+
+  /* ──────────────────────────────────────────
+     SPIN KEYFRAME (for test button)
+  ────────────────────────────────────────── */
+  const styleEl = document.createElement('style');
+  styleEl.textContent = `@keyframes spin { to { transform: rotate(360deg); } }`;
+  document.head.appendChild(styleEl);
+
+  /* ──────────────────────────────────────────
+     INIT
+  ────────────────────────────────────────── */
+  document.addEventListener('DOMContentLoaded', () => {
+    setBaseUrl();
+    fetchHealth();
+    fetchModels();
+    checkLangfuse();
+    buildEnvChecklist();
+  });
+</script>
+</body>
+</html>

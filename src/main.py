@@ -10,7 +10,7 @@ from fastapi.staticfiles import StaticFiles
 
 from src.config import DATABASE_URL, DEBUG
 from src.database import Database
-from src.routes import events, inbox, subscriptions
+from src.routes import chat, events, inbox, subscriptions
 
 logging.basicConfig(level=logging.DEBUG if DEBUG else logging.INFO)
 logger = logging.getLogger(__name__)
@@ -53,6 +53,7 @@ def set_database(db: Database) -> None:
 app.include_router(events.router, prefix="/api/v1")
 app.include_router(inbox.router, prefix="/api/v1")
 app.include_router(subscriptions.router, prefix="/api/v1")
+app.include_router(chat.router, prefix="/api/v1")
 
 # Mount static files
 with contextlib.suppress(Exception):
@@ -102,6 +103,16 @@ async def subscriptions_page():
             return HTMLResponse(content=f.read())
     except FileNotFoundError:
         return HTMLResponse(content="<h1>Subscriptions</h1><p>Page not found.</p>")
+
+
+@app.get("/settings", response_class=HTMLResponse)
+async def settings_page():
+    """Serve the project settings page."""
+    try:
+        with open("static/settings.html") as f:
+            return HTMLResponse(content=f.read())
+    except FileNotFoundError:
+        return HTMLResponse(content="<h1>Settings</h1><p>Page not found.</p>")
 
 
 @app.get("/api/v1/stats")
