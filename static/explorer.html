@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Live Explorer — TriggersAPI</title>
+
+  <!-- Tailwind CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+
+  <!-- Material Symbols -->
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            manrope: ['Manrope', 'sans-serif'],
+            inter: ['Inter', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              DEFAULT: '#FF4F00',
+              dark: '#a93100',
+              light: '#ff6a28',
+              muted: '#fff0eb',
+            },
+          },
+        },
+      },
+    };
+  </script>
+
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    h1, h2, h3, h4, h5, .font-manrope { font-family: 'Manrope', sans-serif; }
+
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      vertical-align: middle;
+      line-height: 1;
+    }
+
+    /* Sidebar active state */
+    .nav-item-active {
+      background: linear-gradient(90deg, #fff0eb 0%, #ffe4d6 100%);
+      color: #a93100;
+      font-weight: 700;
+      border-right: 3px solid #FF4F00;
+    }
+
+    /* Spinner */
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .spinner {
+      display: inline-block;
+      width: 14px;
+      height: 14px;
+      border: 2px solid rgba(255,79,0,0.3);
+      border-top-color: #FF4F00;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    /* Row expand animation */
+    .payload-row {
+      display: none;
+    }
+    .payload-row.open {
+      display: table-row;
+    }
+
+    /* Pulse dot */
+    @keyframes pulse-dot {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+    .pulse-dot {
+      animation: pulse-dot 1.6s ease-in-out infinite;
+    }
+
+    /* Code block scrollbar */
+    .code-block::-webkit-scrollbar { height: 6px; width: 6px; }
+    .code-block::-webkit-scrollbar-track { background: #1e1e2e; }
+    .code-block::-webkit-scrollbar-thumb { background: #44475a; border-radius: 3px; }
+
+    /* Table row hover */
+    .event-row { cursor: pointer; transition: background 0.12s; }
+    .event-row:hover { background: #fafafa; }
+    .event-row.expanded { background: #fff0eb; }
+
+    /* Flash on new row */
+    @keyframes flash-in {
+      from { background: #fff0eb; }
+      to { background: transparent; }
+    }
+    .flash-new { animation: flash-in 1.2s ease-out; }
+  </style>
+</head>
+
+<body class="bg-gray-50 text-gray-800 min-h-screen flex">
+
+  <!-- ═══════════════════════════════════════════ SIDEBAR ═══════════════════════════════════ -->
+  <aside class="w-60 min-h-screen bg-white border-r border-gray-100 flex flex-col shrink-0 fixed top-0 left-0 z-30">
+
+    <!-- Brand -->
+    <div class="px-5 py-5 border-b border-gray-100 flex items-center gap-2.5">
+      <div class="w-8 h-8 rounded-lg bg-brand flex items-center justify-center">
+        <span class="material-symbols-outlined text-white text-[18px]">bolt</span>
+      </div>
+      <span class="font-manrope font-800 text-[15px] tracking-tight text-gray-900" style="font-weight:800">TriggersAPI</span>
+    </div>
+
+    <!-- Nav -->
+    <nav class="flex-1 px-3 py-4 space-y-0.5">
+      <a href="/" class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-600 hover:bg-gray-50 transition-colors text-sm font-medium">
+        <span class="material-symbols-outlined text-[20px]">grid_view</span>
+        Dashboard
+      </a>
+      <a href="/explorer" class="nav-item-active nav-item flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm">
+        <span class="material-symbols-outlined text-[20px]" style="font-variation-settings:'FILL' 1">radar</span>
+        Explorer
+      </a>
+      <a href="/api-reference" class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-600 hover:bg-gray-50 transition-colors text-sm font-medium">
+        <span class="material-symbols-outlined text-[20px]">code</span>
+        API Reference
+      </a>
+      <a href="/subscriptions-page" class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-600 hover:bg-gray-50 transition-colors text-sm font-medium">
+        <span class="material-symbols-outlined text-[20px]">webhook</span>
+        Subscriptions
+      </a>
+    </nav>
+
+    <!-- Create Trigger button -->
+    <div class="px-4 pb-5">
+      <button onclick="openCreateModal()" class="w-full flex items-center justify-center gap-2 bg-brand hover:bg-brand-dark text-white text-sm font-semibold py-2.5 rounded-lg transition-colors shadow-sm">
+        <span class="material-symbols-outlined text-[18px]">add</span>
+        Create Trigger
+      </button>
+    </div>
+  </aside>
+
+  <!-- ═══════════════════════════════════════════ MAIN AREA ═════════════════════════════════ -->
+  <div class="flex-1 flex flex-col ml-60">
+
+    <!-- ─── Top Nav ─── -->
+    <header class="h-14 bg-white border-b border-gray-100 flex items-center px-6 gap-4 sticky top-0 z-20">
+      <!-- Brand (mobile / redundant for desktop) -->
+      <span class="font-manrope font-bold text-gray-900 text-sm tracking-tight hidden md:block">TriggersAPI</span>
+
+      <!-- Search -->
+      <div class="flex-1 max-w-md relative">
+        <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-[18px]">search</span>
+        <input
+          type="text"
+          id="searchInput"
+          placeholder="Search events, sources, types…"
+          class="w-full pl-9 pr-4 py-1.5 text-sm bg-gray-50 border border-gray-200 rounded-lg outline-none focus:border-brand focus:ring-1 focus:ring-brand/20 transition"
+        />
+      </div>
+
+      <div class="ml-auto flex items-center gap-3">
+        <!-- Production badge -->
+        <span class="flex items-center gap-1.5 text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200 px-2.5 py-1 rounded-full">
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 pulse-dot inline-block"></span>
+          Production
+        </span>
+
+        <!-- Notification -->
+        <button class="w-8 h-8 rounded-lg hover:bg-gray-50 flex items-center justify-center text-gray-500 transition relative">
+          <span class="material-symbols-outlined text-[20px]">notifications</span>
+          <span id="notifBadge" class="absolute top-1 right-1 w-2 h-2 rounded-full bg-brand hidden"></span>
+        </button>
+
+        <!-- Settings -->
+        <button class="w-8 h-8 rounded-lg hover:bg-gray-50 flex items-center justify-center text-gray-500 transition">
+          <span class="material-symbols-outlined text-[20px]">settings</span>
+        </button>
+
+        <!-- Avatar -->
+        <div class="w-8 h-8 rounded-full bg-brand-muted border-2 border-brand/20 flex items-center justify-center text-brand font-bold text-xs">
+          T
+        </div>
+      </div>
+    </header>
+
+    <!-- ─── Page Content ─── -->
+    <main class="flex-1 px-8 py-7 max-w-screen-xl mx-auto w-full">
+
+      <!-- Page heading -->
+      <div class="flex items-start justify-between mb-6">
+        <div>
+          <h1 class="font-manrope font-extrabold text-2xl text-gray-900 tracking-tight">Live Explorer</h1>
+          <p class="text-sm text-gray-500 mt-1">Real-time stream of ingested events — click a row to inspect the full payload.</p>
+        </div>
+
+        <!-- Connected badge -->
+        <div id="connectionBadge" class="flex items-center gap-2 bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-semibold px-3 py-1.5 rounded-full">
+          <span class="w-2 h-2 rounded-full bg-emerald-500 pulse-dot"></span>
+          CONNECTED
+        </div>
+      </div>
+
+      <!-- Controls bar -->
+      <div class="flex items-center justify-between mb-4 flex-wrap gap-3">
+        <!-- Filter tabs -->
+        <div class="flex items-center gap-1 bg-white border border-gray-200 rounded-lg p-1">
+          <button data-tab="all" onclick="setTab('all')" class="tab-btn px-3 py-1.5 rounded-md text-xs font-semibold transition-colors bg-brand text-white">
+            All Events
+          </button>
+          <button data-tab="post" onclick="setTab('post')" class="tab-btn px-3 py-1.5 rounded-md text-xs font-semibold transition-colors text-gray-500 hover:text-gray-700">
+            POST /events
+          </button>
+          <button data-tab="get" onclick="setTab('get')" class="tab-btn px-3 py-1.5 rounded-md text-xs font-semibold transition-colors text-gray-500 hover:text-gray-700">
+            GET /inbox
+          </button>
+        </div>
+
+        <!-- Right controls -->
+        <div class="flex items-center gap-2">
+          <!-- Auto-refresh toggle -->
+          <label class="flex items-center gap-2 cursor-pointer select-none">
+            <div class="relative">
+              <input type="checkbox" id="autoRefreshToggle" class="sr-only" checked onchange="toggleAutoRefresh(this.checked)" />
+              <div id="toggleTrack" class="w-9 h-5 rounded-full bg-brand transition-colors"></div>
+              <div id="toggleThumb" class="absolute top-0.5 left-0.5 w-4 h-4 rounded-full bg-white shadow transition-transform translate-x-4"></div>
+            </div>
+            <span class="text-xs text-gray-600 font-medium">Auto-refresh</span>
+          </label>
+
+          <!-- Filter button -->
+          <button onclick="openFilterPanel()" class="flex items-center gap-1.5 text-xs font-semibold text-gray-600 bg-white border border-gray-200 hover:border-gray-300 px-3 py-1.5 rounded-lg transition">
+            <span class="material-symbols-outlined text-[16px]">filter_list</span>
+            Filter
+          </button>
+
+          <!-- Export button -->
+          <button onclick="exportEvents()" class="flex items-center gap-1.5 text-xs font-semibold text-gray-600 bg-white border border-gray-200 hover:border-gray-300 px-3 py-1.5 rounded-lg transition">
+            <span class="material-symbols-outlined text-[16px]">download</span>
+            Export
+          </button>
+
+          <!-- Manual refresh -->
+          <button onclick="fetchEvents()" class="flex items-center gap-1.5 text-xs font-semibold text-white bg-brand hover:bg-brand-dark px-3 py-1.5 rounded-lg transition">
+            <span class="material-symbols-outlined text-[16px]">refresh</span>
+            Refresh
+          </button>
+        </div>
+      </div>
+
+      <!-- Stats strip -->
+      <div id="statsStrip" class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-5"></div>
+
+      <!-- Events table card -->
+      <div class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+
+        <!-- Table header info -->
+        <div class="flex items-center justify-between px-5 py-3 border-b border-gray-100">
+          <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Events Log</span>
+          <span id="eventCount" class="text-xs text-gray-400">— events</span>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="bg-gray-50 border-b border-gray-100">
+                <th class="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider w-44">Timestamp</th>
+                <th class="text-left px-3 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider w-20">Method</th>
+                <th class="text-left px-3 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Source</th>
+                <th class="text-left px-3 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Event Type</th>
+                <th class="text-left px-3 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider w-24">Status</th>
+                <th class="text-right px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider w-20">Latency</th>
+              </tr>
+            </thead>
+            <tbody id="eventsTableBody">
+              <!-- rows injected by JS -->
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Footer / listening indicator -->
+        <div class="flex items-center justify-between px-5 py-3 border-t border-gray-100 bg-gray-50">
+          <div class="flex items-center gap-2 text-xs text-gray-400">
+            <span class="spinner" id="listenSpinner"></span>
+            <span id="listenLabel">LISTENING FOR NEW EVENTS...</span>
+          </div>
+          <span id="lastUpdated" class="text-xs text-gray-400"></span>
+        </div>
+      </div>
+
+      <!-- Empty state (shown when no events) -->
+      <div id="emptyState" class="hidden flex-col items-center justify-center py-20 text-center">
+        <div class="w-14 h-14 rounded-2xl bg-brand-muted flex items-center justify-center mb-4">
+          <span class="material-symbols-outlined text-brand text-3xl">sensors</span>
+        </div>
+        <h3 class="font-manrope font-bold text-gray-800 text-lg">No events yet</h3>
+        <p class="text-gray-500 text-sm mt-1 max-w-xs">Send a <code class="bg-gray-100 px-1 rounded text-xs">POST /api/v1/events</code> request to start seeing live events here.</p>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- ═══════════════════════════════════════════ FILTER PANEL ══════════════════════════════ -->
+  <div id="filterPanel" class="hidden fixed inset-0 z-40 flex justify-end">
+    <div class="absolute inset-0 bg-black/20 backdrop-blur-sm" onclick="closeFilterPanel()"></div>
+    <div class="relative w-80 bg-white h-full shadow-2xl flex flex-col">
+      <div class="flex items-center justify-between px-5 py-4 border-b border-gray-100">
+        <h2 class="font-manrope font-bold text-gray-900">Filter Events</h2>
+        <button onclick="closeFilterPanel()" class="text-gray-400 hover:text-gray-600">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+      <div class="flex-1 px-5 py-5 space-y-5 overflow-y-auto">
+        <div>
+          <label class="text-xs font-semibold text-gray-500 uppercase tracking-wider block mb-2">Source</label>
+          <input id="filterSource" type="text" placeholder="e.g. shopify, stripe" class="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 outline-none focus:border-brand transition" />
+        </div>
+        <div>
+          <label class="text-xs font-semibold text-gray-500 uppercase tracking-wider block mb-2">Event Type</label>
+          <input id="filterType" type="text" placeholder="e.g. order.created" class="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 outline-none focus:border-brand transition" />
+        </div>
+        <div>
+          <label class="text-xs font-semibold text-gray-500 uppercase tracking-wider block mb-2">Status</label>
+          <select id="filterStatus" class="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 outline-none focus:border-brand transition bg-white">
+            <option value="">All</option>
+            <option value="ingested">ingested</option>
+            <option value="queued">queued</option>
+            <option value="delivered">delivered</option>
+            <option value="failed">failed</option>
+          </select>
+        </div>
+      </div>
+      <div class="px-5 py-4 border-t border-gray-100 flex gap-3">
+        <button onclick="clearFilters()" class="flex-1 text-sm font-semibold text-gray-600 border border-gray-200 rounded-lg py-2 hover:bg-gray-50 transition">Clear</button>
+        <button onclick="applyFilters()" class="flex-1 text-sm font-semibold text-white bg-brand hover:bg-brand-dark rounded-lg py-2 transition">Apply</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════ CREATE MODAL ═════════════════════════════ -->
+  <div id="createModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div class="absolute inset-0 bg-black/30 backdrop-blur-sm" onclick="closeCreateModal()"></div>
+    <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-lg">
+      <div class="flex items-center justify-between px-6 py-5 border-b border-gray-100">
+        <h2 class="font-manrope font-bold text-gray-900 text-lg">Create Trigger</h2>
+        <button onclick="closeCreateModal()" class="text-gray-400 hover:text-gray-600">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+      <form onsubmit="submitTrigger(event)" class="px-6 py-5 space-y-4">
+        <div>
+          <label class="text-xs font-semibold text-gray-500 uppercase tracking-wider block mb-1.5">Event Type <span class="text-brand">*</span></label>
+          <input id="ctEventType" type="text" placeholder="e.g. order.created" required class="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 outline-none focus:border-brand transition" />
+        </div>
+        <div>
+          <label class="text-xs font-semibold text-gray-500 uppercase tracking-wider block mb-1.5">Source <span class="text-brand">*</span></label>
+          <input id="ctSource" type="text" placeholder="e.g. shopify" required class="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 outline-none focus:border-brand transition" />
+        </div>
+        <div>
+          <label class="text-xs font-semibold text-gray-500 uppercase tracking-wider block mb-1.5">Payload (JSON) <span class="text-brand">*</span></label>
+          <textarea id="ctPayload" rows="5" placeholder='{"key": "value"}' required class="w-full text-sm font-mono border border-gray-200 rounded-lg px-3 py-2 outline-none focus:border-brand transition resize-none"></textarea>
+          <p id="ctPayloadError" class="text-xs text-red-500 mt-1 hidden">Invalid JSON</p>
+        </div>
+        <div class="flex gap-3 pt-1">
+          <button type="button" onclick="closeCreateModal()" class="flex-1 text-sm font-semibold text-gray-600 border border-gray-200 rounded-lg py-2.5 hover:bg-gray-50 transition">Cancel</button>
+          <button type="submit" id="ctSubmitBtn" class="flex-1 text-sm font-semibold text-white bg-brand hover:bg-brand-dark rounded-lg py-2.5 transition">
+            Send Event
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════ TOAST ════════════════════════════════════ -->
+  <div id="toast" class="fixed bottom-6 right-6 z-[60] flex items-center gap-3 bg-gray-900 text-white text-sm font-medium px-4 py-3 rounded-xl shadow-2xl opacity-0 translate-y-2 transition-all duration-300 pointer-events-none max-w-xs">
+    <span id="toastIcon" class="material-symbols-outlined text-[20px] text-emerald-400">check_circle</span>
+    <span id="toastMsg"></span>
+  </div>
+
+  <!-- ═══════════════════════════════════════════ SCRIPTS ══════════════════════════════════ -->
+  <script>
+    // ── State ──────────────────────────────────────────────────────────────────
+    let allEvents = [];
+    let displayedIds = new Set();
+    let activeTab = 'all';
+    let autoRefresh = true;
+    let refreshTimer = null;
+    let activeFilters = { source: '', type: '', status: '' };
+
+    // ── Helpers ────────────────────────────────────────────────────────────────
+    function fmtTimestamp(iso) {
+      const d = new Date(iso);
+      const pad = n => String(n).padStart(2, '0');
+      return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
+    }
+
+    function fmtTimestampShort(iso) {
+      const d = new Date(iso);
+      const pad = n => String(n).padStart(2, '0');
+      return `${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
+    }
+
+    function methodBadge(method) {
+      if (method === 'POST') {
+        return `<span class="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-bold bg-purple-100 text-purple-700 tracking-wide">${method}</span>`;
+      }
+      return `<span class="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-bold bg-emerald-100 text-emerald-700 tracking-wide">${method}</span>`;
+    }
+
+    function statusBadge(status) {
+      const map = {
+        ingested:  'bg-blue-50 text-blue-700 border border-blue-200',
+        queued:    'bg-yellow-50 text-yellow-700 border border-yellow-200',
+        delivered: 'bg-emerald-50 text-emerald-700 border border-emerald-200',
+        failed:    'bg-red-50 text-red-600 border border-red-200',
+      };
+      const cls = map[status] || 'bg-gray-100 text-gray-600';
+      return `<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold ${cls}">${status}</span>`;
+    }
+
+    function httpBadge(code) {
+      if (!code) return '';
+      const cls = code < 300
+        ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+        : code < 500
+          ? 'bg-yellow-50 text-yellow-700 border border-yellow-200'
+          : 'bg-red-50 text-red-600 border border-red-200';
+      const label = code < 300 ? `${code} OK` : `${code}`;
+      return `<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold ${cls}">${label}</span>`;
+    }
+
+    function fakeLatency(id) {
+      // Deterministic fake latency based on id hash
+      let h = 0;
+      for (let i = 0; i < id.length; i++) h = (h * 31 + id.charCodeAt(i)) | 0;
+      return (Math.abs(h) % 200 + 12) + 'ms';
+    }
+
+    function deriveMethod(event) {
+      // inbox events come via GET /inbox; ingested events come via POST /events
+      if (event.status === 'ingested' || event.status === 'queued') return 'POST';
+      return 'POST'; // all come in via POST; reading is GET but the *event* itself was POSTed
+    }
+
+    function showToast(msg, type = 'success') {
+      const el = document.getElementById('toast');
+      const icon = document.getElementById('toastIcon');
+      const msgEl = document.getElementById('toastMsg');
+      msgEl.textContent = msg;
+      icon.textContent = type === 'success' ? 'check_circle' : type === 'error' ? 'error' : 'info';
+      icon.className = `material-symbols-outlined text-[20px] ${type === 'success' ? 'text-emerald-400' : type === 'error' ? 'text-red-400' : 'text-blue-400'}`;
+      el.classList.remove('opacity-0', 'translate-y-2');
+      el.classList.add('opacity-100', 'translate-y-0');
+      setTimeout(() => {
+        el.classList.add('opacity-0', 'translate-y-2');
+        el.classList.remove('opacity-100', 'translate-y-0');
+      }, 3000);
+    }
+
+    // ── Tab switching ──────────────────────────────────────────────────────────
+    function setTab(tab) {
+      activeTab = tab;
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        if (btn.dataset.tab === tab) {
+          btn.classList.add('bg-brand', 'text-white');
+          btn.classList.remove('text-gray-500', 'hover:text-gray-700');
+        } else {
+          btn.classList.remove('bg-brand', 'text-white');
+          btn.classList.add('text-gray-500', 'hover:text-gray-700');
+        }
+      });
+      renderTable();
+    }
+
+    // ── Filter panel ───────────────────────────────────────────────────────────
+    function openFilterPanel() {
+      document.getElementById('filterPanel').classList.remove('hidden');
+      document.getElementById('filterPanel').classList.add('flex');
+    }
+    function closeFilterPanel() {
+      document.getElementById('filterPanel').classList.add('hidden');
+      document.getElementById('filterPanel').classList.remove('flex');
+    }
+    function applyFilters() {
+      activeFilters.source = document.getElementById('filterSource').value.trim().toLowerCase();
+      activeFilters.type   = document.getElementById('filterType').value.trim().toLowerCase();
+      activeFilters.status = document.getElementById('filterStatus').value;
+      closeFilterPanel();
+      renderTable();
+    }
+    function clearFilters() {
+      document.getElementById('filterSource').value = '';
+      document.getElementById('filterType').value   = '';
+      document.getElementById('filterStatus').value = '';
+      activeFilters = { source: '', type: '', status: '' };
+      closeFilterPanel();
+      renderTable();
+    }
+
+    // ── Create modal ───────────────────────────────────────────────────────────
+    function openCreateModal() {
+      document.getElementById('createModal').classList.remove('hidden');
+    }
+    function closeCreateModal() {
+      document.getElementById('createModal').classList.add('hidden');
+    }
+    async function submitTrigger(e) {
+      e.preventDefault();
+      const eventType = document.getElementById('ctEventType').value.trim();
+      const source    = document.getElementById('ctSource').value.trim();
+      const payloadRaw = document.getElementById('ctPayload').value.trim();
+      const errEl = document.getElementById('ctPayloadError');
+
+      let payload;
+      try {
+        payload = JSON.parse(payloadRaw);
+        errEl.classList.add('hidden');
+      } catch {
+        errEl.classList.remove('hidden');
+        return;
+      }
+
+      const btn = document.getElementById('ctSubmitBtn');
+      btn.textContent = 'Sending…';
+      btn.disabled = true;
+
+      try {
+        const res = await fetch('/api/v1/events', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ event_type: eventType, source, payload }),
+        });
+        if (res.ok) {
+          showToast('Event ingested successfully', 'success');
+          closeCreateModal();
+          document.getElementById('ctEventType').value = '';
+          document.getElementById('ctSource').value = '';
+          document.getElementById('ctPayload').value = '';
+          await fetchEvents();
+        } else {
+          const data = await res.json().catch(() => ({}));
+          showToast(data.detail || 'Failed to create event', 'error');
+        }
+      } catch (err) {
+        showToast('Network error — is the server running?', 'error');
+      } finally {
+        btn.textContent = 'Send Event';
+        btn.disabled = false;
+      }
+    }
+
+    // ── Export ─────────────────────────────────────────────────────────────────
+    function exportEvents() {
+      const data = JSON.stringify(allEvents, null, 2);
+      const blob = new Blob([data], { type: 'application/json' });
+      const url  = URL.createObjectURL(blob);
+      const a    = document.createElement('a');
+      a.href = url;
+      a.download = `triggers-events-${Date.now()}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+      showToast(`Exported ${allEvents.length} events`, 'success');
+    }
+
+    // ── Auto-refresh toggle ────────────────────────────────────────────────────
+    function toggleAutoRefresh(enabled) {
+      autoRefresh = enabled;
+      const track = document.getElementById('toggleTrack');
+      const thumb = document.getElementById('toggleThumb');
+      if (enabled) {
+        track.classList.add('bg-brand');
+        track.classList.remove('bg-gray-300');
+        thumb.classList.add('translate-x-4');
+        thumb.classList.remove('translate-x-0');
+        scheduleRefresh();
+      } else {
+        track.classList.remove('bg-brand');
+        track.classList.add('bg-gray-300');
+        thumb.classList.remove('translate-x-4');
+        thumb.classList.add('translate-x-0');
+        clearTimeout(refreshTimer);
+        document.getElementById('listenLabel').textContent = 'AUTO-REFRESH PAUSED';
+        document.getElementById('listenSpinner').style.display = 'none';
+      }
+    }
+
+    function scheduleRefresh() {
+      clearTimeout(refreshTimer);
+      if (!autoRefresh) return;
+      refreshTimer = setTimeout(async () => {
+        await fetchEvents();
+        scheduleRefresh();
+      }, 5000);
+    }
+
+    // ── Fetch events ───────────────────────────────────────────────────────────
+    async function fetchEvents() {
+      try {
+        setConnected(true);
+        const res = await fetch('/api/v1/events?limit=20');
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const data = await res.json();
+        allEvents = Array.isArray(data) ? data : [];
+        renderTable();
+        renderStats();
+        updateLastUpdated();
+      } catch (err) {
+        setConnected(false);
+        console.error('Failed to fetch events:', err);
+      }
+    }
+
+    function setConnected(ok) {
+      const badge = document.getElementById('connectionBadge');
+      if (ok) {
+        badge.className = 'flex items-center gap-2 bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-semibold px-3 py-1.5 rounded-full';
+        badge.innerHTML = '<span class="w-2 h-2 rounded-full bg-emerald-500 pulse-dot"></span> CONNECTED';
+      } else {
+        badge.className = 'flex items-center gap-2 bg-red-50 border border-red-200 text-red-600 text-xs font-semibold px-3 py-1.5 rounded-full';
+        badge.innerHTML = '<span class="w-2 h-2 rounded-full bg-red-500"></span> DISCONNECTED';
+      }
+    }
+
+    function updateLastUpdated() {
+      const now = new Date();
+      document.getElementById('lastUpdated').textContent = `Last updated ${now.toLocaleTimeString()}`;
+    }
+
+    // ── Render stats strip ─────────────────────────────────────────────────────
+    function renderStats() {
+      const total     = allEvents.length;
+      const delivered = allEvents.filter(e => e.status === 'delivered').length;
+      const failed    = allEvents.filter(e => e.status === 'failed').length;
+      const sources   = new Set(allEvents.map(e => e.source)).size;
+
+      const strip = document.getElementById('statsStrip');
+      strip.innerHTML = [
+        { label: 'Total Events', value: total,     icon: 'bolt',         color: 'text-brand' },
+        { label: 'Delivered',    value: delivered,  icon: 'check_circle', color: 'text-emerald-600' },
+        { label: 'Failed',       value: failed,     icon: 'error',        color: 'text-red-500' },
+        { label: 'Sources',      value: sources,    icon: 'hub',          color: 'text-purple-600' },
+      ].map(s => `
+        <div class="bg-white border border-gray-200 rounded-xl px-4 py-3 flex items-center gap-3 shadow-sm">
+          <span class="material-symbols-outlined text-[22px] ${s.color}">${s.icon}</span>
+          <div>
+            <div class="text-lg font-manrope font-bold text-gray-900">${s.value}</div>
+            <div class="text-xs text-gray-400 font-medium">${s.label}</div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // ── Render table ───────────────────────────────────────────────────────────
+    function renderTable() {
+      const search = document.getElementById('searchInput').value.toLowerCase();
+
+      let events = allEvents.filter(e => {
+        // Tab filter
+        if (activeTab === 'post') return true; // all events come via POST /events
+        if (activeTab === 'get')  return e.status === 'ingested' || e.status === 'queued';
+        return true;
+      }).filter(e => {
+        // Active filters
+        if (activeFilters.source && !e.source.toLowerCase().includes(activeFilters.source)) return false;
+        if (activeFilters.type   && !e.event_type.toLowerCase().includes(activeFilters.type))   return false;
+        if (activeFilters.status && e.status !== activeFilters.status) return false;
+        return true;
+      }).filter(e => {
+        // Search
+        if (!search) return true;
+        return (
+          e.id.toLowerCase().includes(search) ||
+          e.event_type.toLowerCase().includes(search) ||
+          e.source.toLowerCase().includes(search) ||
+          e.status.toLowerCase().includes(search)
+        );
+      });
+
+      document.getElementById('eventCount').textContent = `${events.length} event${events.length !== 1 ? 's' : ''}`;
+
+      const tbody = document.getElementById('eventsTableBody');
+
+      if (events.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="6" class="px-5 py-16 text-center">
+              <div class="flex flex-col items-center gap-3">
+                <span class="material-symbols-outlined text-gray-300 text-5xl">sensors_off</span>
+                <div class="text-gray-400 text-sm">No events match your filters.</div>
+              </div>
+            </td>
+          </tr>`;
+        return;
+      }
+
+      // Track which rows are currently expanded
+      const openRows = new Set();
+      document.querySelectorAll('.event-row.expanded').forEach(r => openRows.add(r.dataset.id));
+
+      tbody.innerHTML = events.map((e, idx) => {
+        const isNew = !displayedIds.has(e.id);
+        const method = deriveMethod(e);
+        const latency = fakeLatency(e.id);
+        const ts = fmtTimestamp(e.received_at || e.timestamp);
+        const payloadJson = JSON.stringify(e.payload, null, 2);
+        const isOpen = openRows.has(e.id);
+
+        return `
+          <tr
+            class="event-row border-b border-gray-50 ${isNew ? 'flash-new' : ''} ${isOpen ? 'expanded' : ''}"
+            data-id="${e.id}"
+            onclick="toggleRow('${e.id}')"
+          >
+            <td class="px-5 py-3 text-xs text-gray-500 font-mono whitespace-nowrap">
+              <div class="flex items-center gap-1.5">
+                <span class="material-symbols-outlined text-[14px] text-gray-300">schedule</span>
+                ${ts}
+              </div>
+            </td>
+            <td class="px-3 py-3">${methodBadge(method)}</td>
+            <td class="px-3 py-3">
+              <span class="text-xs font-semibold text-gray-700 bg-gray-100 px-2 py-0.5 rounded">${escHtml(e.source)}</span>
+            </td>
+            <td class="px-3 py-3 text-xs text-gray-700 font-medium">${escHtml(e.event_type)}</td>
+            <td class="px-3 py-3">${statusBadge(e.status)}</td>
+            <td class="px-5 py-3 text-right text-xs text-gray-500 font-mono">${latency}</td>
+          </tr>
+          <tr class="payload-row ${isOpen ? 'open' : ''}" data-payload-id="${e.id}">
+            <td colspan="6" class="px-5 pb-4 pt-0 bg-gray-50">
+              <div class="rounded-xl overflow-hidden border border-gray-200 shadow-inner">
+                <div class="flex items-center justify-between px-4 py-2 bg-[#1e1e2e] border-b border-[#313244]">
+                  <div class="flex items-center gap-2">
+                    <span class="material-symbols-outlined text-[14px] text-[#89b4fa]">data_object</span>
+                    <span class="text-xs text-[#cdd6f4] font-mono font-semibold">Event Payload</span>
+                    <span class="text-[11px] text-[#6c7086] font-mono">— ID: ${escHtml(e.id)}</span>
+                  </div>
+                  <button onclick="copyPayload(event, '${escAttr(payloadJson)}')" class="flex items-center gap-1 text-[11px] text-[#6c7086] hover:text-[#cdd6f4] transition">
+                    <span class="material-symbols-outlined text-[14px]">content_copy</span>
+                    Copy
+                  </button>
+                </div>
+                <pre class="code-block bg-[#1e1e2e] text-[#cdd6f4] text-xs font-mono px-4 py-3 overflow-x-auto leading-relaxed">${syntaxHighlight(payloadJson)}</pre>
+                <div class="bg-[#181825] px-4 py-2 flex items-center gap-4 flex-wrap">
+                  <span class="text-[11px] text-[#6c7086]">received_at: <span class="text-[#a6e3a1]">${escHtml(e.received_at || '')}</span></span>
+                  <span class="text-[11px] text-[#6c7086]">status: <span class="text-[#fab387]">${escHtml(e.status)}</span></span>
+                  ${e.retry_count > 0 ? `<span class="text-[11px] text-[#6c7086]">retries: <span class="text-[#f38ba8]">${e.retry_count}</span></span>` : ''}
+                  ${e.delivered_at ? `<span class="text-[11px] text-[#6c7086]">delivered_at: <span class="text-[#a6e3a1]">${escHtml(e.delivered_at)}</span></span>` : ''}
+                </div>
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join('');
+
+      // Update known ids
+      events.forEach(e => displayedIds.add(e.id));
+    }
+
+    function toggleRow(id) {
+      const row     = document.querySelector(`.event-row[data-id="${id}"]`);
+      const payload = document.querySelector(`.payload-row[data-payload-id="${id}"]`);
+      if (!row || !payload) return;
+      const isOpen = payload.classList.contains('open');
+      payload.classList.toggle('open', !isOpen);
+      row.classList.toggle('expanded', !isOpen);
+    }
+
+    function copyPayload(e, json) {
+      e.stopPropagation();
+      navigator.clipboard.writeText(json).then(() => showToast('Payload copied to clipboard', 'success'));
+    }
+
+    function escHtml(str) {
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+
+    function escAttr(str) {
+      return String(str).replace(/\\/g, '\\\\').replace(/'/g, "\\'").replace(/\n/g, '\\n');
+    }
+
+    function syntaxHighlight(json) {
+      return escHtml(json)
+        .replace(/(&quot;[^&]*&quot;)\s*:/g, '<span style="color:#89b4fa">$1</span>:')
+        .replace(/:\s*(&quot;[^&]*&quot;)/g, ': <span style="color:#a6e3a1">$1</span>')
+        .replace(/:\s*(-?\d+\.?\d*)/g, ': <span style="color:#fab387">$1</span>')
+        .replace(/:\s*(true|false)/g, ': <span style="color:#cba6f7">$1</span>')
+        .replace(/:\s*(null)/g, ': <span style="color:#6c7086">$1</span>');
+    }
+
+    // ── Search live filter ─────────────────────────────────────────────────────
+    document.getElementById('searchInput').addEventListener('input', renderTable);
+
+    // ── Init ───────────────────────────────────────────────────────────────────
+    async function init() {
+      await fetchEvents();
+      scheduleRefresh();
+    }
+
+    init();
+  </script>
+</body>
+</html>
