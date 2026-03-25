@@ -89,16 +89,12 @@ class Database:
             import contextlib
 
             with contextlib.suppress(Exception):
-                conn.execute(
-                    "ALTER TABLE events ADD COLUMN request_meta TEXT"
-                )
+                conn.execute("ALTER TABLE events ADD COLUMN request_meta TEXT")
             conn.commit()
         finally:
             conn.close()
 
-    def create_event(
-        self, event_data: EventCreate, request_meta: dict | None = None
-    ) -> Event:
+    def create_event(self, event_data: EventCreate, request_meta: dict | None = None) -> Event:
         event_id = f"evt_{uuid.uuid4().hex[:12]}"
         now = datetime.now(timezone.utc)
         timestamp = event_data.timestamp or now
