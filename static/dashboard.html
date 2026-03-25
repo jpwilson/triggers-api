@@ -12,6 +12,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
   <script>
     tailwind.config = {
+      darkMode: 'class',
       theme: {
         extend: {
           colors: {
@@ -46,6 +47,9 @@
     ::-webkit-scrollbar-track { background: #f1f5f9; }
     ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
     ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+    .dark ::-webkit-scrollbar-track { background: #1a1b24; }
+    .dark ::-webkit-scrollbar-thumb { background: #3a3b4a; }
+    .dark ::-webkit-scrollbar-thumb:hover { background: #4a4b5a; }
 
     .sidebar-link {
       display: flex; align-items: center; gap: 10px;
@@ -60,6 +64,13 @@
     }
     .sidebar-link.active .material-symbols-outlined { color: #FF4F00; }
 
+    .dark .sidebar-link { color: #9ca3af; }
+    .dark .sidebar-link:hover { background: #1e1f2a; color: #f4f4f5; }
+    .dark .sidebar-link.active { background: rgba(255,79,0,0.12); color: #ff6a2b; }
+    .dark .sidebar-link.active .material-symbols-outlined { color: #FF4F00; }
+
+    .dark .sidebar-status-box { background: rgba(255,79,0,0.08) !important; border-color: rgba(255,79,0,0.2) !important; }
+
     .metric-card {
       background: #fff;
       border: 1px solid #f1f5f9;
@@ -70,10 +81,18 @@
     }
     .metric-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.08); transform: translateY(-1px); }
 
+    .dark .metric-card { background: #181922; border-color: #262733; box-shadow: 0 1px 4px rgba(0,0,0,0.3); }
+    .dark .metric-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.4); }
+
     .badge-delivered { background: #dcfce7; color: #166534; }
     .badge-ingested  { background: #dbeafe; color: #1e40af; }
     .badge-queued    { background: #fef9c3; color: #854d0e; }
     .badge-failed    { background: #fee2e2; color: #991b1b; }
+
+    .dark .badge-delivered { background: rgba(16,185,129,0.15); color: #34d399; }
+    .dark .badge-ingested  { background: rgba(59,130,246,0.15); color: #60a5fa; }
+    .dark .badge-queued    { background: rgba(234,179,8,0.15);  color: #fbbf24; }
+    .dark .badge-failed    { background: rgba(239,68,68,0.15);  color: #f87171; }
 
     .quick-action-btn {
       display: flex; align-items: center; gap: 12px;
@@ -91,6 +110,11 @@
     .quick-action-btn:hover .qa-icon { color: #FF4F00; }
     .qa-icon { color: #94a3b8; transition: color 0.15s; }
 
+    .dark .quick-action-btn { background: #1a1b24; border-color: #262733; color: #f4f4f5; }
+    .dark .quick-action-btn:hover { background: #1e1f2a; border-color: #FF4F00; box-shadow: 0 2px 8px rgba(255,79,0,0.15); }
+    .dark .quick-action-btn:hover .qa-icon { color: #FF4F00; }
+    .dark .qa-icon { color: #6b7280; }
+
     .data-table th {
       font-size: 11px; font-weight: 600; text-transform: uppercase;
       letter-spacing: 0.06em; color: #94a3b8; padding: 10px 16px;
@@ -101,6 +125,10 @@
     .data-table tbody tr { transition: background 0.1s; }
     .data-table tbody tr:hover { background: #f8fafc; }
 
+    .dark .data-table th { background: #111219; border-bottom-color: #262733; color: #6b7280; }
+    .dark .data-table td { border-bottom-color: #1e1f2a; }
+    .dark .data-table tbody tr:hover { background: #1e1f2a; }
+
     .top-nav-link {
       font-size: 13.5px; font-weight: 500; color: #64748b;
       text-decoration: none; padding: 6px 12px; border-radius: 8px;
@@ -108,11 +136,18 @@
     }
     .top-nav-link:hover { background: #f1f5f9; color: #1e293b; }
 
+    .dark .top-nav-link { color: #9ca3af; }
+    .dark .top-nav-link:hover { background: #1e1f2a; color: #f4f4f5; }
+
     .skeleton {
       background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
       background-size: 400% 100%;
       animation: shimmer 1.4s infinite;
       border-radius: 6px;
+    }
+    .dark .skeleton {
+      background: linear-gradient(90deg, #1e1f2a 25%, #262733 50%, #1e1f2a 75%);
+      background-size: 400% 100%;
     }
     @keyframes shimmer {
       0%   { background-position: 100% 0; }
@@ -122,6 +157,10 @@
     /* Chart bar animation */
     .chart-bar { transition: height 0.6s cubic-bezier(.22,1,.36,1); }
 
+    /* Dark mode SVG chart lines and labels */
+    .dark #event-chart line { stroke: #262733; }
+    .dark #event-chart text { fill: #6b7280; }
+
     #mobile-bottom-nav { display: none; }
     @media (max-width: 768px) {
       #sidebar { display: none; }
@@ -130,17 +169,17 @@
     }
   </style>
 </head>
-<body class="bg-slate-50 min-h-screen">
+<body class="bg-slate-50 dark:bg-[#0d0e14] min-h-screen">
 
 <!-- ============================================================
      TOP NAV
 ============================================================ -->
-<header class="fixed top-0 left-0 right-0 z-40 bg-white border-b border-slate-100 h-14 flex items-center px-4 md:px-6" style="box-shadow:0 1px 3px rgba(0,0,0,0.06);">
+<header class="fixed top-0 left-0 right-0 z-40 bg-white dark:bg-[#13141c] border-b border-slate-100 dark:border-[#1f2029] h-14 flex items-center px-4 md:px-6" style="box-shadow:0 1px 3px rgba(0,0,0,0.06);">
   <div class="flex items-center gap-2 w-56 shrink-0">
     <div class="w-7 h-7 rounded-lg flex items-center justify-center" style="background:linear-gradient(135deg,#FF4F00,#a93100);">
       <span class="material-symbols-outlined filled text-white" style="font-size:16px;">bolt</span>
     </div>
-    <span class="font-display font-800 text-slate-900 text-base tracking-tight font-extrabold">TriggersAPI</span>
+    <span class="font-display font-800 text-slate-900 dark:text-gray-100 text-base tracking-tight font-extrabold">TriggersAPI</span>
   </div>
 
   <nav class="hidden md:flex items-center gap-1 ml-6">
@@ -150,11 +189,11 @@
   </nav>
 
   <div class="ml-auto flex items-center gap-3">
-    <span class="hidden sm:inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
+    <span class="hidden sm:inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1 rounded-full bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800">
       <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse inline-block"></span>
       Production
     </span>
-    <button class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 hover:bg-slate-200 transition-colors">
+    <button class="w-8 h-8 rounded-full bg-slate-100 dark:bg-[#1a1b24] flex items-center justify-center text-slate-500 dark:text-gray-400 hover:bg-slate-200 dark:hover:bg-[#1e1f2a] transition-colors">
       <span class="material-symbols-outlined" style="font-size:18px;">notifications</span>
     </button>
     <div class="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold" style="background:linear-gradient(135deg,#FF4F00,#a93100);">
@@ -166,19 +205,19 @@
 <!-- ============================================================
      SIDEBAR
 ============================================================ -->
-<aside id="sidebar" class="fixed top-14 left-0 bottom-0 w-56 bg-white border-r border-slate-100 flex flex-col z-30 overflow-y-auto" style="box-shadow:1px 0 0 #f1f5f9;">
+<aside id="sidebar" class="fixed top-14 left-0 bottom-0 w-56 bg-white dark:bg-[#0f1018] border-r border-slate-100 dark:border-[#1f2029] flex flex-col z-30 overflow-y-auto" style="box-shadow:1px 0 0 #f1f5f9;">
   <!-- Brand / Hub -->
   <div class="px-4 pt-5 pb-3">
     <div class="flex items-center gap-2 px-2 mb-1">
       <span class="material-symbols-outlined text-brand" style="font-size:15px;">bolt</span>
-      <span class="text-xs font-semibold text-slate-400 uppercase tracking-widest">Developer Hub</span>
+      <span class="text-xs font-semibold text-slate-400 dark:text-gray-500 uppercase tracking-widest">Developer Hub</span>
     </div>
     <div class="px-2">
-      <span class="text-xs text-slate-300 font-medium">v1.0.0</span>
+      <span class="text-xs text-slate-300 dark:text-gray-600 font-medium">v1.0.0</span>
     </div>
   </div>
 
-  <div class="h-px bg-slate-100 mx-4 mb-3"></div>
+  <div class="h-px bg-slate-100 dark:bg-[#1f2029] mx-4 mb-3"></div>
 
   <!-- Nav Links -->
   <nav class="flex flex-col gap-1 px-3">
@@ -204,7 +243,7 @@
     </a>
   </nav>
 
-  <div class="h-px bg-slate-100 mx-4 my-4"></div>
+  <div class="h-px bg-slate-100 dark:bg-[#1f2029] mx-4 my-4"></div>
 
   <!-- Create Trigger CTA -->
   <div class="px-3 pb-2">
@@ -216,9 +255,9 @@
   </div>
 
   <div class="mt-auto px-3 pb-5 pt-4">
-    <div class="rounded-xl p-3 text-xs" style="background:#fff3ee; border:1px solid #ffcaab;">
-      <p class="font-semibold text-orange-800 mb-0.5">System Status</p>
-      <p class="text-orange-600 flex items-center gap-1">
+    <div class="sidebar-status-box rounded-xl p-3 text-xs" style="background:#fff3ee; border:1px solid #ffcaab;">
+      <p class="font-semibold text-orange-800 dark:text-orange-300 mb-0.5">System Status</p>
+      <p class="text-orange-600 dark:text-orange-400 flex items-center gap-1">
         <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 inline-block"></span>
         All systems operational
       </p>
@@ -229,21 +268,21 @@
 <!-- ============================================================
      MAIN CONTENT
 ============================================================ -->
-<main id="main-content" class="pt-14 md:ml-56 min-h-screen">
+<main id="main-content" class="pt-14 md:ml-56 min-h-screen dark:bg-[#0d0e14]">
   <div class="max-w-6xl mx-auto px-4 md:px-8 py-8 pb-24 md:pb-8">
 
     <!-- Page Header -->
     <div class="flex items-center justify-between mb-8">
       <div>
-        <h1 class="font-display text-2xl font-bold text-slate-900 mb-1">System Overview</h1>
-        <p class="text-sm text-slate-500">Real-time metrics and event activity for your TriggersAPI instance.</p>
+        <h1 class="font-display text-2xl font-bold text-slate-900 dark:text-gray-100 mb-1">System Overview</h1>
+        <p class="text-sm text-slate-500 dark:text-gray-400">Real-time metrics and event activity for your TriggersAPI instance.</p>
       </div>
       <div class="hidden sm:flex items-center gap-2">
-        <button onclick="refreshAll()" class="flex items-center gap-1.5 text-sm font-medium text-slate-500 px-3 py-2 rounded-lg hover:bg-slate-100 transition-colors">
+        <button onclick="refreshAll()" class="flex items-center gap-1.5 text-sm font-medium text-slate-500 dark:text-gray-400 px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-[#1e1f2a] transition-colors">
           <span class="material-symbols-outlined" id="refresh-icon" style="font-size:17px;">refresh</span>
           Refresh
         </button>
-        <span class="text-xs text-slate-400" id="last-updated">—</span>
+        <span class="text-xs text-slate-400 dark:text-gray-500" id="last-updated">—</span>
       </div>
     </div>
 
@@ -255,13 +294,13 @@
           <div class="w-10 h-10 rounded-xl flex items-center justify-center" style="background:#fff3ee;">
             <span class="material-symbols-outlined filled text-brand" style="font-size:22px;">bolt</span>
           </div>
-          <span id="events-trend" class="text-xs font-semibold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-600">Live</span>
+          <span id="events-trend" class="text-xs font-semibold px-2 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400">Live</span>
         </div>
-        <p class="text-sm font-medium text-slate-500 mb-1">Total Events</p>
-        <p class="font-display text-3xl font-bold text-slate-900" id="stat-total-events">
+        <p class="text-sm font-medium text-slate-500 dark:text-gray-400 mb-1">Total Events</p>
+        <p class="font-display text-3xl font-bold text-slate-900 dark:text-gray-100" id="stat-total-events">
           <span class="skeleton inline-block w-16 h-8">&nbsp;</span>
         </p>
-        <p class="text-xs text-slate-400 mt-2" id="stat-events-breakdown">Loading breakdown…</p>
+        <p class="text-xs text-slate-400 dark:text-gray-500 mt-2" id="stat-events-breakdown">Loading breakdown…</p>
       </div>
 
       <!-- Success Rate -->
@@ -270,13 +309,13 @@
           <div class="w-10 h-10 rounded-xl flex items-center justify-center" style="background:#f0fdf4;">
             <span class="material-symbols-outlined filled text-emerald-500" style="font-size:22px;">verified</span>
           </div>
-          <span class="text-xs font-semibold px-2 py-0.5 rounded-full bg-slate-100 text-slate-500" id="success-label">Delivery</span>
+          <span class="text-xs font-semibold px-2 py-0.5 rounded-full bg-slate-100 dark:bg-[#1a1b24] text-slate-500 dark:text-gray-400" id="success-label">Delivery</span>
         </div>
-        <p class="text-sm font-medium text-slate-500 mb-1">Success Rate</p>
-        <p class="font-display text-3xl font-bold text-slate-900" id="stat-success-rate">
+        <p class="text-sm font-medium text-slate-500 dark:text-gray-400 mb-1">Success Rate</p>
+        <p class="font-display text-3xl font-bold text-slate-900 dark:text-gray-100" id="stat-success-rate">
           <span class="skeleton inline-block w-20 h-8">&nbsp;</span>
         </p>
-        <div class="mt-3 w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
+        <div class="mt-3 w-full bg-slate-100 dark:bg-[#262733] rounded-full h-1.5 overflow-hidden">
           <div id="success-bar" class="h-1.5 rounded-full transition-all duration-700" style="width:0%;background:linear-gradient(90deg,#10b981,#22c55e);"></div>
         </div>
       </div>
@@ -287,13 +326,13 @@
           <div class="w-10 h-10 rounded-xl flex items-center justify-center" style="background:#eff6ff;">
             <span class="material-symbols-outlined filled text-blue-500" style="font-size:22px;">webhook</span>
           </div>
-          <span class="text-xs font-semibold px-2 py-0.5 rounded-full bg-blue-50 text-blue-600" id="subs-badge">Active</span>
+          <span class="text-xs font-semibold px-2 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400" id="subs-badge">Active</span>
         </div>
-        <p class="text-sm font-medium text-slate-500 mb-1">Active Subscriptions</p>
-        <p class="font-display text-3xl font-bold text-slate-900" id="stat-active-subs">
+        <p class="text-sm font-medium text-slate-500 dark:text-gray-400 mb-1">Active Subscriptions</p>
+        <p class="font-display text-3xl font-bold text-slate-900 dark:text-gray-100" id="stat-active-subs">
           <span class="skeleton inline-block w-12 h-8">&nbsp;</span>
         </p>
-        <p class="text-xs text-slate-400 mt-2" id="stat-total-subs">Loading…</p>
+        <p class="text-xs text-slate-400 dark:text-gray-500 mt-2" id="stat-total-subs">Loading…</p>
       </div>
     </div>
 
@@ -301,13 +340,13 @@
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-8">
 
       <!-- Event Volume Chart (2/3 width) -->
-      <div class="lg:col-span-2 bg-white rounded-2xl border border-slate-100 p-6" style="box-shadow:0 1px 4px rgba(0,0,0,0.05);">
+      <div class="lg:col-span-2 bg-white dark:bg-[#181922] rounded-2xl border border-slate-100 dark:border-[#262733] p-6" style="box-shadow:0 1px 4px rgba(0,0,0,0.05);">
         <div class="flex items-center justify-between mb-6">
           <div>
-            <h2 class="font-display font-semibold text-slate-900 text-base">Event Volume</h2>
-            <p class="text-xs text-slate-400 mt-0.5">Events by status (last 7 days)</p>
+            <h2 class="font-display font-semibold text-slate-900 dark:text-gray-100 text-base">Event Volume</h2>
+            <p class="text-xs text-slate-400 dark:text-gray-500 mt-0.5">Events by status (last 7 days)</p>
           </div>
-          <div class="flex items-center gap-3 text-xs text-slate-500">
+          <div class="flex items-center gap-3 text-xs text-slate-500 dark:text-gray-400">
             <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-sm inline-block" style="background:#3b82f6;"></span>Ingested</span>
             <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-sm inline-block" style="background:#10b981;"></span>Delivered</span>
             <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-sm inline-block" style="background:#ef4444;"></span>Failed</span>
@@ -339,64 +378,64 @@
           <!-- Overlay totals badge -->
           <div class="absolute top-0 right-0 flex flex-col items-end gap-1">
             <div class="text-right">
-              <p class="text-xs text-slate-400">Total this week</p>
-              <p class="font-display font-bold text-slate-900 text-xl" id="chart-total">—</p>
+              <p class="text-xs text-slate-400 dark:text-gray-500">Total this week</p>
+              <p class="font-display font-bold text-slate-900 dark:text-gray-100 text-xl" id="chart-total">—</p>
             </div>
           </div>
         </div>
       </div>
 
       <!-- Quick Actions (1/3 width) -->
-      <div class="bg-white rounded-2xl border border-slate-100 p-6 flex flex-col" style="box-shadow:0 1px 4px rgba(0,0,0,0.05);">
-        <h2 class="font-display font-semibold text-slate-900 text-base mb-1">Quick Actions</h2>
-        <p class="text-xs text-slate-400 mb-5">Common tasks and shortcuts</p>
+      <div class="bg-white dark:bg-[#181922] rounded-2xl border border-slate-100 dark:border-[#262733] p-6 flex flex-col" style="box-shadow:0 1px 4px rgba(0,0,0,0.05);">
+        <h2 class="font-display font-semibold text-slate-900 dark:text-gray-100 text-base mb-1">Quick Actions</h2>
+        <p class="text-xs text-slate-400 dark:text-gray-500 mb-5">Common tasks and shortcuts</p>
 
         <div class="flex flex-col gap-3 flex-1">
           <a href="/explorer" class="quick-action-btn">
             <span class="material-symbols-outlined qa-icon filled" style="font-size:20px;">manage_search</span>
             <div>
               <p class="font-semibold text-sm">View API Logs</p>
-              <p class="text-xs text-slate-400">Browse & filter events</p>
+              <p class="text-xs text-slate-400 dark:text-gray-500">Browse & filter events</p>
             </div>
-            <span class="material-symbols-outlined ml-auto text-slate-300" style="font-size:18px;">chevron_right</span>
+            <span class="material-symbols-outlined ml-auto text-slate-300 dark:text-gray-600" style="font-size:18px;">chevron_right</span>
           </a>
 
           <a href="/subscriptions-page" class="quick-action-btn">
             <span class="material-symbols-outlined qa-icon filled" style="font-size:20px;">webhook</span>
             <div>
               <p class="font-semibold text-sm">Configure Webhooks</p>
-              <p class="text-xs text-slate-400">Manage subscriptions</p>
+              <p class="text-xs text-slate-400 dark:text-gray-500">Manage subscriptions</p>
             </div>
-            <span class="material-symbols-outlined ml-auto text-slate-300" style="font-size:18px;">chevron_right</span>
+            <span class="material-symbols-outlined ml-auto text-slate-300 dark:text-gray-600" style="font-size:18px;">chevron_right</span>
           </a>
 
           <button onclick="rotateApiKey()" class="quick-action-btn text-left">
             <span class="material-symbols-outlined qa-icon filled" style="font-size:20px;">key</span>
             <div>
               <p class="font-semibold text-sm">Rotate API Keys</p>
-              <p class="text-xs text-slate-400">Regenerate credentials</p>
+              <p class="text-xs text-slate-400 dark:text-gray-500">Regenerate credentials</p>
             </div>
-            <span class="material-symbols-outlined ml-auto text-slate-300" style="font-size:18px;">chevron_right</span>
+            <span class="material-symbols-outlined ml-auto text-slate-300 dark:text-gray-600" style="font-size:18px;">chevron_right</span>
           </button>
 
           <a href="/docs" class="quick-action-btn">
             <span class="material-symbols-outlined qa-icon filled" style="font-size:20px;">menu_book</span>
             <div>
               <p class="font-semibold text-sm">Documentation</p>
-              <p class="text-xs text-slate-400">OpenAPI / Swagger</p>
+              <p class="text-xs text-slate-400 dark:text-gray-500">OpenAPI / Swagger</p>
             </div>
-            <span class="material-symbols-outlined ml-auto text-slate-300" style="font-size:18px;">chevron_right</span>
+            <span class="material-symbols-outlined ml-auto text-slate-300 dark:text-gray-600" style="font-size:18px;">chevron_right</span>
           </a>
         </div>
       </div>
     </div>
 
     <!-- ── RECENT EVENTS TABLE ── -->
-    <div class="bg-white rounded-2xl border border-slate-100 overflow-hidden" style="box-shadow:0 1px 4px rgba(0,0,0,0.05);">
-      <div class="flex items-center justify-between px-6 py-5 border-b border-slate-100">
+    <div class="bg-white dark:bg-[#181922] rounded-2xl border border-slate-100 dark:border-[#262733] overflow-hidden" style="box-shadow:0 1px 4px rgba(0,0,0,0.05);">
+      <div class="flex items-center justify-between px-6 py-5 border-b border-slate-100 dark:border-[#262733]">
         <div>
-          <h2 class="font-display font-semibold text-slate-900 text-base">Recent Events</h2>
-          <p class="text-xs text-slate-400 mt-0.5">Latest 5 events across all sources</p>
+          <h2 class="font-display font-semibold text-slate-900 dark:text-gray-100 text-base">Recent Events</h2>
+          <p class="text-xs text-slate-400 dark:text-gray-500 mt-0.5">Latest 5 events across all sources</p>
         </div>
         <a href="/explorer" class="flex items-center gap-1 text-sm font-semibold text-brand hover:text-brand-dark transition-colors">
           View all
@@ -436,8 +475,8 @@
         <div class="w-14 h-14 rounded-2xl flex items-center justify-center mb-4" style="background:#fff3ee;">
           <span class="material-symbols-outlined filled text-brand" style="font-size:28px;">inbox</span>
         </div>
-        <p class="font-display font-semibold text-slate-800 mb-1">No events yet</p>
-        <p class="text-sm text-slate-400 mb-5 max-w-xs">Events will appear here once your integrations start sending data.</p>
+        <p class="font-display font-semibold text-slate-800 dark:text-gray-200 mb-1">No events yet</p>
+        <p class="text-sm text-slate-400 dark:text-gray-500 mb-5 max-w-xs">Events will appear here once your integrations start sending data.</p>
         <a href="/explorer" class="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-white text-sm font-semibold"
            style="background:linear-gradient(135deg,#FF4F00,#a93100);">
           <span class="material-symbols-outlined filled" style="font-size:16px;">add_circle</span>
@@ -452,17 +491,17 @@
 <!-- ============================================================
      FOOTER
 ============================================================ -->
-<footer class="md:ml-56 border-t border-slate-100 bg-white px-8 py-5">
+<footer class="md:ml-56 border-t border-slate-100 dark:border-[#1f2029] bg-white dark:bg-[#0f1017] px-8 py-5">
   <div class="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
     <div class="flex items-center gap-2">
       <span class="material-symbols-outlined filled text-brand" style="font-size:16px;">bolt</span>
-      <span class="text-sm font-semibold text-slate-700 font-display">TriggersAPI</span>
-      <span class="text-xs text-slate-400">v1.0.0</span>
+      <span class="text-sm font-semibold text-slate-700 dark:text-gray-300 font-display">TriggersAPI</span>
+      <span class="text-xs text-slate-400 dark:text-gray-600">v1.0.0</span>
     </div>
-    <div class="flex items-center gap-6 text-xs text-slate-400">
-      <a href="/docs" class="hover:text-slate-600 transition-colors">Documentation</a>
-      <a href="#" class="hover:text-slate-600 transition-colors">Privacy</a>
-      <a href="#" class="hover:text-slate-600 transition-colors">Terms</a>
+    <div class="flex items-center gap-6 text-xs text-slate-400 dark:text-gray-500">
+      <a href="/docs" class="hover:text-slate-600 dark:hover:text-gray-300 transition-colors">Documentation</a>
+      <a href="#" class="hover:text-slate-600 dark:hover:text-gray-300 transition-colors">Privacy</a>
+      <a href="#" class="hover:text-slate-600 dark:hover:text-gray-300 transition-colors">Terms</a>
       <span>&copy; 2025 TriggersAPI</span>
     </div>
   </div>
@@ -471,20 +510,20 @@
 <!-- ============================================================
      MOBILE BOTTOM NAV
 ============================================================ -->
-<nav id="mobile-bottom-nav" class="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-100 z-40 justify-around items-center py-2" style="box-shadow:0 -1px 8px rgba(0,0,0,0.06);">
+<nav id="mobile-bottom-nav" class="fixed bottom-0 left-0 right-0 bg-white dark:bg-[#13141c] border-t border-slate-100 dark:border-[#1f2029] z-40 justify-around items-center py-2" style="box-shadow:0 -1px 8px rgba(0,0,0,0.06);">
   <a href="/" class="flex flex-col items-center gap-0.5 px-4 py-1" style="color:#FF4F00;">
     <span class="material-symbols-outlined filled" style="font-size:22px;">dashboard</span>
     <span class="text-xs font-medium">Dashboard</span>
   </a>
-  <a href="/explorer" class="flex flex-col items-center gap-0.5 px-4 py-1 text-slate-400">
+  <a href="/explorer" class="flex flex-col items-center gap-0.5 px-4 py-1 text-slate-400 dark:text-gray-500">
     <span class="material-symbols-outlined" style="font-size:22px;">manage_search</span>
     <span class="text-xs font-medium">Explorer</span>
   </a>
-  <a href="/api-reference" class="flex flex-col items-center gap-0.5 px-4 py-1 text-slate-400">
+  <a href="/api-reference" class="flex flex-col items-center gap-0.5 px-4 py-1 text-slate-400 dark:text-gray-500">
     <span class="material-symbols-outlined" style="font-size:22px;">code</span>
     <span class="text-xs font-medium">API Ref</span>
   </a>
-  <a href="/subscriptions-page" class="flex flex-col items-center gap-0.5 px-4 py-1 text-slate-400">
+  <a href="/subscriptions-page" class="flex flex-col items-center gap-0.5 px-4 py-1 text-slate-400 dark:text-gray-500">
     <span class="material-symbols-outlined" style="font-size:22px;">webhook</span>
     <span class="text-xs font-medium">Subs</span>
   </a>
@@ -493,7 +532,7 @@
 <!-- ============================================================
      TOAST NOTIFICATION
 ============================================================ -->
-<div id="toast" class="fixed bottom-6 right-6 z-50 hidden items-center gap-3 bg-slate-900 text-white text-sm font-medium px-4 py-3 rounded-xl shadow-xl transition-all">
+<div id="toast" class="fixed bottom-6 right-6 z-50 hidden items-center gap-3 bg-slate-900 dark:bg-[#1a1b24] dark:border dark:border-[#262733] text-white text-sm font-medium px-4 py-3 rounded-xl shadow-xl transition-all">
   <span class="material-symbols-outlined filled" id="toast-icon" style="font-size:18px;">check_circle</span>
   <span id="toast-msg">Action completed</span>
 </div>
@@ -677,12 +716,13 @@
 
       // Empty bar placeholder
       if (total3 === 0) {
+        const isDark = document.documentElement.classList.contains('dark');
         const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
         rect.setAttribute('x', x - barW / 2);
         rect.setAttribute('y', chartH - 4);
         rect.setAttribute('width', barW);
         rect.setAttribute('height', 4);
-        rect.setAttribute('fill', '#e2e8f0');
+        rect.setAttribute('fill', isDark ? '#262733' : '#e2e8f0');
         rect.setAttribute('rx', '2');
         barsEl.appendChild(rect);
       }
@@ -730,13 +770,13 @@
         return `
           <tr>
             <td>
-              <span class="font-mono text-xs text-slate-600 bg-slate-50 px-2 py-1 rounded-md border border-slate-200" title="${ev.id}">${shortId}</span>
+              <span class="font-mono text-xs text-slate-600 dark:text-gray-400 bg-slate-50 dark:bg-[#1a1b24] px-2 py-1 rounded-md border border-slate-200 dark:border-[#262733]" title="${ev.id}">${shortId}</span>
             </td>
             <td>
-              <span class="text-sm font-medium text-slate-700">${escHtml(eventType)}</span>
+              <span class="text-sm font-medium text-slate-700 dark:text-gray-300">${escHtml(eventType)}</span>
             </td>
             <td>
-              <span class="inline-flex items-center gap-1 text-xs font-medium text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full">${escHtml(source)}</span>
+              <span class="inline-flex items-center gap-1 text-xs font-medium text-slate-500 dark:text-gray-400 bg-slate-100 dark:bg-[#1a1b24] px-2 py-0.5 rounded-full">${escHtml(source)}</span>
             </td>
             <td>
               <span class="inline-flex items-center gap-1 text-xs font-semibold px-2.5 py-1 rounded-full ${badgeClass}">
@@ -745,10 +785,10 @@
               </span>
             </td>
             <td>
-              <span class="text-sm text-slate-500">${received}</span>
+              <span class="text-sm text-slate-500 dark:text-gray-400">${received}</span>
             </td>
             <td>
-              <span class="text-sm ${retries > 0 ? 'text-amber-600 font-semibold' : 'text-slate-400'}">${retries}</span>
+              <span class="text-sm ${retries > 0 ? 'text-amber-600 dark:text-amber-400 font-semibold' : 'text-slate-400 dark:text-gray-600'}">${retries}</span>
             </td>
           </tr>
         `;
@@ -758,8 +798,8 @@
       console.error('Events error:', e);
       document.getElementById('events-table-body').innerHTML = `
         <tr>
-          <td colspan="6" class="text-center py-8 text-sm text-slate-400">
-            <span class="material-symbols-outlined block mx-auto mb-2 text-slate-300" style="font-size:28px;">cloud_off</span>
+          <td colspan="6" class="text-center py-8 text-sm text-slate-400 dark:text-gray-500">
+            <span class="material-symbols-outlined block mx-auto mb-2 text-slate-300 dark:text-gray-600" style="font-size:28px;">cloud_off</span>
             Failed to load events
           </td>
         </tr>`;

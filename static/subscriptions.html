@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="light">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <link rel="icon" type="image/svg+xml" href="/static/favicon.svg">
@@ -23,8 +23,20 @@
     rel="stylesheet"
   />
 
+  <!-- Dark mode initialisation: apply 'dark' class before first paint to avoid flash -->
+  <script>
+    (function () {
+      const stored = localStorage.getItem('triggersapi_theme');
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (stored === 'dark' || (!stored && prefersDark)) {
+        document.documentElement.classList.add('dark');
+      }
+    })();
+  </script>
+
   <script>
     tailwind.config = {
+      darkMode: 'class',
       theme: {
         extend: {
           colors: {
@@ -59,10 +71,14 @@
     * { box-sizing: border-box; }
 
     body {
-      background-color: #0f0f0f;
-      color: #f0f0f0;
+      background-color: #f8fafc;
+      color: #111827;
       font-family: 'Inter', system-ui, sans-serif;
       min-height: 100vh;
+    }
+    .dark body {
+      background-color: #0f0f0f;
+      color: #f0f0f0;
     }
 
     .ms {
@@ -79,14 +95,18 @@
     .sidebar {
       width: 220px;
       min-height: 100vh;
-      background: #111111;
-      border-right: 1px solid #2a2a2a;
+      background: #f5f5f5;
+      border-right: 1px solid #e5e7eb;
       display: flex;
       flex-direction: column;
       position: fixed;
       top: 0;
       left: 0;
       bottom: 0;
+    }
+    .dark .sidebar {
+      background: #111111;
+      border-right-color: #2a2a2a;
     }
 
     .sidebar-nav-item {
@@ -97,14 +117,14 @@
       border-radius: 8px;
       font-size: 14px;
       font-weight: 500;
-      color: #9a9a9a;
+      color: #6b7280;
       text-decoration: none;
       transition: background 0.15s, color 0.15s;
       margin: 1px 8px;
     }
     .sidebar-nav-item:hover {
-      background: #1e1e1e;
-      color: #f0f0f0;
+      background: #e5e7eb;
+      color: #111827;
     }
     .sidebar-nav-item.active {
       background: rgba(255, 79, 0, 0.12);
@@ -113,16 +133,27 @@
     .sidebar-nav-item.active .ms {
       color: #FF4F00;
     }
+    .dark .sidebar-nav-item {
+      color: #9a9a9a;
+    }
+    .dark .sidebar-nav-item:hover {
+      background: #1e1e1e;
+      color: #f0f0f0;
+    }
 
     /* Top nav */
     .topnav {
       height: 56px;
-      background: #111111;
-      border-bottom: 1px solid #2a2a2a;
+      background: #ffffff;
+      border-bottom: 1px solid #e5e7eb;
       display: flex;
       align-items: center;
       padding: 0 24px;
       gap: 12px;
+    }
+    .dark .topnav {
+      background: #111111;
+      border-bottom-color: #2a2a2a;
     }
 
     /* Main layout */
@@ -141,9 +172,13 @@
 
     /* Cards */
     .card {
-      background: #1a1a1a;
-      border: 1px solid #2a2a2a;
+      background: #ffffff;
+      border: 1px solid #e5e7eb;
       border-radius: 12px;
+    }
+    .dark .card {
+      background: #1a1a1a;
+      border-color: #2a2a2a;
     }
 
     /* Bento grid */
@@ -157,29 +192,38 @@
     /* Form inputs */
     .form-input {
       width: 100%;
-      background: #111111;
-      border: 1px solid #2a2a2a;
+      background: #f9fafb;
+      border: 1px solid #d1d5db;
       border-radius: 8px;
       padding: 9px 12px;
       font-size: 13.5px;
-      color: #f0f0f0;
+      color: #111827;
       outline: none;
       transition: border-color 0.15s, box-shadow 0.15s;
       font-family: inherit;
     }
-    .form-input::placeholder { color: #4a4a4a; }
+    .form-input::placeholder { color: #9ca3af; }
     .form-input:focus {
       border-color: #FF4F00;
       box-shadow: 0 0 0 3px rgba(255, 79, 0, 0.12);
     }
+    .dark .form-input {
+      background: #111111;
+      border-color: #2a2a2a;
+      color: #f0f0f0;
+    }
+    .dark .form-input::placeholder { color: #4a4a4a; }
     .form-label {
       display: block;
       font-size: 12px;
       font-weight: 600;
-      color: #9a9a9a;
+      color: #6b7280;
       text-transform: uppercase;
       letter-spacing: 0.06em;
       margin-bottom: 6px;
+    }
+    .dark .form-label {
+      color: #9a9a9a;
     }
 
     /* Toggle */
@@ -199,7 +243,7 @@
       position: absolute;
       cursor: pointer;
       inset: 0;
-      background: #2a2a2a;
+      background: #d1d5db;
       border-radius: 22px;
       transition: background 0.2s;
     }
@@ -210,9 +254,15 @@
       height: 16px;
       left: 3px;
       top: 3px;
-      background: #9a9a9a;
+      background: #9ca3af;
       border-radius: 50%;
       transition: transform 0.2s, background 0.2s;
+    }
+    .dark .toggle-slider {
+      background: #2a2a2a;
+    }
+    .dark .toggle-slider::before {
+      background: #9a9a9a;
     }
     .toggle input:checked + .toggle-slider { background: rgba(255, 79, 0, 0.25); }
     .toggle input:checked + .toggle-slider::before {
@@ -222,10 +272,20 @@
 
     /* Stat cards */
     .stat-card {
-      background: #1a1a1a;
-      border: 1px solid #2a2a2a;
+      background: #ffffff;
+      border: 1px solid #e5e7eb;
       border-radius: 12px;
       padding: 20px 24px;
+    }
+    .dark .stat-card {
+      background: #1a1a1a;
+      border-color: #2a2a2a;
+    }
+    .hero-stat-card {
+      background: linear-gradient(135deg, rgba(255,79,0,0.05) 0%, #ffffff 100%);
+    }
+    .dark .hero-stat-card {
+      background: linear-gradient(135deg, rgba(255,79,0,0.07) 0%, #1a1a1a 100%) !important;
     }
 
     /* Table */
@@ -241,17 +301,28 @@
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.07em;
+      color: #6b7280;
+      background: #f9fafb;
+      border-bottom: 1px solid #e5e7eb;
+    }
+    .dark .data-table th {
       color: #9a9a9a;
-      border-bottom: 1px solid #2a2a2a;
+      background: transparent;
+      border-bottom-color: #2a2a2a;
     }
     .data-table td {
       padding: 13px 16px;
-      border-bottom: 1px solid #1e1e1e;
-      color: #e0e0e0;
+      border-bottom: 1px solid #f3f4f6;
+      color: #374151;
       vertical-align: middle;
     }
+    .dark .data-table td {
+      border-bottom-color: #1e1e1e;
+      color: #e0e0e0;
+    }
     .data-table tbody tr:last-child td { border-bottom: none; }
-    .data-table tbody tr:hover td { background: rgba(255,255,255,0.025); }
+    .data-table tbody tr:hover td { background: #f9fafb; }
+    .dark .data-table tbody tr:hover td { background: rgba(255,255,255,0.025); }
 
     /* Status badge */
     .badge {
@@ -269,13 +340,20 @@
       height: 6px;
       border-radius: 50%;
     }
-    .badge-active  { background: rgba(34,197,94,0.12);  color: #22c55e; }
-    .badge-active .badge-dot  { background: #22c55e; }
-    .badge-paused  { background: rgba(100,116,139,0.15); color: #94a3b8; }
-    .badge-paused .badge-dot  { background: #94a3b8; }
-    .badge-degraded { background: rgba(234,179,8,0.12);  color: #eab308; }
-    .badge-degraded .badge-dot { background: #eab308; }
-    .badge-prod { background: rgba(255,79,0,0.14); color: #FF6A2B; font-size: 10.5px; padding: 2px 8px; }
+    .badge-active  { background: rgba(34,197,94,0.10);  color: #16a34a; }
+    .badge-active .badge-dot  { background: #16a34a; }
+    .badge-paused  { background: rgba(100,116,139,0.12); color: #64748b; }
+    .badge-paused .badge-dot  { background: #64748b; }
+    .badge-degraded { background: rgba(234,179,8,0.10);  color: #b45309; }
+    .badge-degraded .badge-dot { background: #b45309; }
+    .badge-prod { background: rgba(255,79,0,0.12); color: #c2410c; font-size: 10.5px; padding: 2px 8px; }
+    .dark .badge-active  { background: rgba(34,197,94,0.12);  color: #22c55e; }
+    .dark .badge-active .badge-dot  { background: #22c55e; }
+    .dark .badge-paused  { background: rgba(100,116,139,0.15); color: #94a3b8; }
+    .dark .badge-paused .badge-dot  { background: #94a3b8; }
+    .dark .badge-degraded { background: rgba(234,179,8,0.12);  color: #eab308; }
+    .dark .badge-degraded .badge-dot { background: #eab308; }
+    .dark .badge-prod { background: rgba(255,79,0,0.14); color: #FF6A2B; }
 
     /* Buttons */
     .btn-primary {
@@ -302,9 +380,9 @@
       align-items: center;
       gap: 7px;
       padding: 8px 16px;
-      background: #1e1e1e;
-      color: #d0d0d0;
-      border: 1px solid #2a2a2a;
+      background: #ffffff;
+      color: #374151;
+      border: 1px solid #d1d5db;
       border-radius: 8px;
       font-size: 13px;
       font-weight: 500;
@@ -313,7 +391,13 @@
       font-family: inherit;
       text-decoration: none;
     }
-    .btn-secondary:hover { background: #252525; border-color: #383838; color: #f0f0f0; }
+    .btn-secondary:hover { background: #f3f4f6; border-color: #9ca3af; color: #111827; }
+    .dark .btn-secondary {
+      background: #1e1e1e;
+      color: #d0d0d0;
+      border-color: #2a2a2a;
+    }
+    .dark .btn-secondary:hover { background: #252525; border-color: #383838; color: #f0f0f0; }
 
     .btn-icon {
       display: inline-flex;
@@ -324,20 +408,27 @@
       border-radius: 6px;
       border: 1px solid transparent;
       background: transparent;
-      color: #9a9a9a;
+      color: #6b7280;
       cursor: pointer;
       transition: background 0.15s, color 0.15s, border-color 0.15s;
       font-family: inherit;
     }
-    .btn-icon:hover { background: #252525; border-color: #2a2a2a; color: #f0f0f0; }
-    .btn-icon.danger:hover { background: rgba(239,68,68,0.1); border-color: rgba(239,68,68,0.3); color: #ef4444; }
+    .btn-icon:hover { background: #f3f4f6; border-color: #e5e7eb; color: #111827; }
+    .btn-icon.danger:hover { background: rgba(239,68,68,0.08); border-color: rgba(239,68,68,0.25); color: #dc2626; }
+    .dark .btn-icon { color: #9a9a9a; }
+    .dark .btn-icon:hover { background: #252525; border-color: #2a2a2a; color: #f0f0f0; }
+    .dark .btn-icon.danger:hover { background: rgba(239,68,68,0.1); border-color: rgba(239,68,68,0.3); color: #ef4444; }
 
     /* Footer callout */
     .callout {
-      background: linear-gradient(135deg, rgba(255,79,0,0.07), rgba(169,49,0,0.04));
-      border: 1px solid rgba(255,79,0,0.18);
+      background: linear-gradient(135deg, rgba(255,79,0,0.06), rgba(169,49,0,0.03));
+      border: 1px solid rgba(255,79,0,0.20);
       border-radius: 10px;
       padding: 16px 20px;
+    }
+    .dark .callout {
+      background: linear-gradient(135deg, rgba(255,79,0,0.07), rgba(169,49,0,0.04));
+      border-color: rgba(255,79,0,0.18);
     }
 
     /* Toast */
@@ -363,8 +454,10 @@
       animation: slideIn 0.2s ease;
       min-width: 260px;
     }
-    .toast-success { background: rgba(34,197,94,0.15); border: 1px solid rgba(34,197,94,0.3); color: #4ade80; }
-    .toast-error   { background: rgba(239,68,68,0.15);  border: 1px solid rgba(239,68,68,0.3);  color: #f87171; }
+    .toast-success { background: rgba(34,197,94,0.12); border: 1px solid rgba(34,197,94,0.3); color: #15803d; }
+    .toast-error   { background: rgba(239,68,68,0.12);  border: 1px solid rgba(239,68,68,0.3);  color: #b91c1c; }
+    .dark .toast-success { background: rgba(34,197,94,0.15); color: #4ade80; }
+    .dark .toast-error   { background: rgba(239,68,68,0.15); color: #f87171; }
     @keyframes slideIn {
       from { transform: translateX(60px); opacity: 0; }
       to   { transform: translateX(0);    opacity: 1; }
@@ -377,16 +470,23 @@
       align-items: center;
       justify-content: center;
       padding: 48px 24px;
-      color: #4a4a4a;
+      color: #9ca3af;
       gap: 8px;
+    }
+    .dark .empty-state {
+      color: #4a4a4a;
     }
 
     /* Loading skeleton */
     .skeleton {
-      background: linear-gradient(90deg, #1e1e1e 25%, #252525 50%, #1e1e1e 75%);
+      background: linear-gradient(90deg, #e5e7eb 25%, #f3f4f6 50%, #e5e7eb 75%);
       background-size: 200% 100%;
       animation: shimmer 1.5s infinite;
       border-radius: 4px;
+    }
+    .dark .skeleton {
+      background: linear-gradient(90deg, #1e1e1e 25%, #252525 50%, #1e1e1e 75%);
+      background-size: 200% 100%;
     }
     @keyframes shimmer {
       from { background-position: 200% 0; }
@@ -397,9 +497,12 @@
     .rate-bar-track {
       width: 100%;
       height: 5px;
-      background: #252525;
+      background: #e5e7eb;
       border-radius: 3px;
       overflow: hidden;
+    }
+    .dark .rate-bar-track {
+      background: #252525;
     }
     .rate-bar-fill {
       height: 100%;
@@ -410,7 +513,8 @@
 
     ::-webkit-scrollbar { width: 6px; }
     ::-webkit-scrollbar-track { background: transparent; }
-    ::-webkit-scrollbar-thumb { background: #2a2a2a; border-radius: 3px; }
+    ::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 3px; }
+    .dark ::-webkit-scrollbar-thumb { background: #2a2a2a; }
   </style>
 </head>
 <body>
@@ -418,17 +522,17 @@
 <!-- ══════════════ SIDEBAR ══════════════ -->
 <aside class="sidebar">
   <!-- Brand -->
-  <div class="px-5 py-5 border-b border-surface-border flex items-center gap-3">
+  <div class="px-5 py-5 border-b border-gray-200 dark:border-[#2a2a2a] flex items-center gap-3">
     <div style="width:32px;height:32px;background:linear-gradient(135deg,#FF4F00,#a93100);border-radius:8px;display:flex;align-items:center;justify-content:center;">
       <span class="ms" style="color:#fff;font-size:17px;">bolt</span>
     </div>
-    <span class="font-display font-700 text-base text-ink" style="font-weight:700;letter-spacing:-0.01em;">TriggersAPI</span>
+    <span class="font-display text-base text-gray-900 dark:text-gray-100" style="font-weight:700;letter-spacing:-0.01em;">TriggersAPI</span>
   </div>
 
   <!-- Nav -->
   <nav class="flex-1 py-4 overflow-y-auto">
     <div class="px-4 mb-3">
-      <p class="text-xs font-semibold text-ink-faint uppercase tracking-widest" style="letter-spacing:0.1em;">Navigation</p>
+      <p class="text-xs font-semibold text-gray-400 dark:text-[#4a4a4a] uppercase tracking-widest" style="letter-spacing:0.1em;">Navigation</p>
     </div>
 
     <a href="/" class="sidebar-nav-item">
@@ -453,7 +557,7 @@
     </a>
 
     <div class="px-4 mt-6 mb-3">
-      <p class="text-xs font-semibold text-ink-faint uppercase tracking-widest" style="letter-spacing:0.1em;">Actions</p>
+      <p class="text-xs font-semibold text-gray-400 dark:text-[#4a4a4a] uppercase tracking-widest" style="letter-spacing:0.1em;">Actions</p>
     </div>
 
     <div class="px-4">
@@ -465,12 +569,12 @@
   </nav>
 
   <!-- Bottom info -->
-  <div class="px-5 py-4 border-t border-surface-border">
-    <div class="flex items-center gap-2 text-xs text-ink-faint">
+  <div class="px-5 py-4 border-t border-gray-200 dark:border-[#2a2a2a]">
+    <div class="flex items-center gap-2 text-xs text-gray-400 dark:text-[#4a4a4a]">
       <span class="ms" style="font-size:14px;">circle</span>
       System Healthy
     </div>
-    <p class="text-xs text-ink-faint mt-1" style="color:#4a4a4a;">v1.0.0</p>
+    <p class="text-xs text-gray-400 dark:text-[#4a4a4a] mt-1">v1.0.0</p>
   </div>
 </aside>
 
@@ -480,7 +584,7 @@
   <!-- TOP NAV -->
   <header class="topnav sticky top-0 z-10">
     <span class="ms ms-lg" style="color:#FF4F00;">notifications_active</span>
-    <span class="font-display font-semibold text-base text-ink">Subscription Manager</span>
+    <span class="font-display font-semibold text-base text-gray-900 dark:text-gray-100">Subscription Manager</span>
     <span class="badge badge-prod ml-2">PRODUCTION</span>
     <div class="flex-1"></div>
     <button onclick="exportConfig()" class="btn-secondary" id="export-btn">
@@ -498,8 +602,8 @@
 
     <!-- Page Header -->
     <div class="mb-8">
-      <h1 class="font-display text-3xl font-bold text-ink" style="font-weight:800;letter-spacing:-0.02em;">Subscriptions</h1>
-      <p class="text-ink-muted mt-1.5 text-sm" style="max-width:560px;">
+      <h1 class="font-display text-3xl font-bold text-gray-900 dark:text-gray-100" style="font-weight:800;letter-spacing:-0.02em;">Subscriptions</h1>
+      <p class="text-gray-500 dark:text-[#9a9a9a] mt-1.5 text-sm" style="max-width:560px;">
         Configure push-delivery streams to receive webhook events at your endpoints.
         Each subscription can filter by event type and source, with optional exponential-backoff retries.
       </p>
@@ -515,8 +619,8 @@
             <span class="ms" style="color:#FF4F00;">add_circle</span>
           </div>
           <div>
-            <h2 class="font-display font-bold text-base text-ink">New Subscription</h2>
-            <p class="text-xs text-ink-muted">Set up a new webhook delivery stream</p>
+            <h2 class="font-display font-bold text-base text-gray-900 dark:text-gray-100">New Subscription</h2>
+            <p class="text-xs text-gray-500 dark:text-[#9a9a9a]">Set up a new webhook delivery stream</p>
           </div>
         </div>
 
@@ -552,7 +656,7 @@
             <!-- Event Types -->
             <div>
               <label class="form-label" for="f-event-types">Event Types
-                <span style="color:#4a4a4a;font-weight:400;text-transform:none;letter-spacing:0;">(comma-separated, leave blank for all)</span>
+                <span class="text-gray-400 dark:text-[#4a4a4a]" style="font-weight:400;text-transform:none;letter-spacing:0;">(comma-separated, leave blank for all)</span>
               </label>
               <input
                 id="f-event-types"
@@ -566,7 +670,7 @@
             <!-- Sources -->
             <div>
               <label class="form-label" for="f-sources">Sources
-                <span style="color:#4a4a4a;font-weight:400;text-transform:none;letter-spacing:0;">(comma-separated, leave blank for all)</span>
+                <span class="text-gray-400 dark:text-[#4a4a4a]" style="font-weight:400;text-transform:none;letter-spacing:0;">(comma-separated, leave blank for all)</span>
               </label>
               <input
                 id="f-sources"
@@ -580,8 +684,8 @@
             <!-- Retry Logic Toggle -->
             <div class="toggle-wrap py-2">
               <div>
-                <p class="text-sm font-medium text-ink">Retry Logic</p>
-                <p class="text-xs text-ink-muted mt-0.5">Exponential backoff on failed deliveries (up to 5 attempts)</p>
+                <p class="text-sm font-medium text-gray-900 dark:text-gray-100">Retry Logic</p>
+                <p class="text-xs text-gray-500 dark:text-[#9a9a9a] mt-0.5">Exponential backoff on failed deliveries (up to 5 attempts)</p>
               </div>
               <label class="toggle" title="Toggle retry logic">
                 <input type="checkbox" id="f-retry" checked />
@@ -607,18 +711,18 @@
       <div class="flex flex-col gap-4">
 
         <!-- Global Delivery Rate - large hero card -->
-        <div class="stat-card flex-1" style="background:linear-gradient(135deg,rgba(255,79,0,0.07) 0%,#1a1a1a 100%);">
+        <div class="stat-card flex-1 hero-stat-card">
           <div class="flex items-center justify-between mb-3">
             <p class="form-label mb-0" style="margin-bottom:0;">Global Delivery Rate</p>
             <span class="ms" style="color:#FF4F00;font-size:20px;">speed</span>
           </div>
-          <div id="stat-rate" class="font-display text-5xl font-black text-ink mb-1" style="font-weight:800;letter-spacing:-0.03em;">
+          <div id="stat-rate" class="font-display text-5xl font-black text-gray-900 dark:text-gray-100 mb-1" style="font-weight:800;letter-spacing:-0.03em;">
             <span class="skeleton" style="width:110px;height:48px;display:inline-block;">&nbsp;</span>
           </div>
           <div class="rate-bar-track mt-3">
             <div class="rate-bar-fill" id="rate-bar" style="width:0%;"></div>
           </div>
-          <p class="text-xs text-ink-muted mt-2">Across all active subscriptions</p>
+          <p class="text-xs text-gray-500 dark:text-[#9a9a9a] mt-2">Across all active subscriptions</p>
         </div>
 
         <!-- Total Subscriptions -->
@@ -626,7 +730,7 @@
           <div class="flex items-center justify-between">
             <div>
               <p class="form-label mb-1" style="margin-bottom:4px;">Total Subscriptions</p>
-              <div id="stat-total" class="font-display text-3xl font-bold text-ink" style="font-weight:700;">
+              <div id="stat-total" class="font-display text-3xl font-bold text-gray-900 dark:text-gray-100" style="font-weight:700;">
                 <span class="skeleton" style="width:48px;height:32px;display:inline-block;">&nbsp;</span>
               </div>
             </div>
@@ -634,8 +738,8 @@
               <span class="ms ms-lg" style="color:#FF4F00;">notifications</span>
             </div>
           </div>
-          <p class="text-xs text-ink-muted mt-2">
-            <span id="stat-active-count" class="text-green-400 font-semibold">—</span> active
+          <p class="text-xs text-gray-500 dark:text-[#9a9a9a] mt-2">
+            <span id="stat-active-count" class="text-green-600 dark:text-green-400 font-semibold">—</span> active
           </p>
         </div>
 
@@ -644,7 +748,7 @@
           <div class="flex items-center justify-between">
             <div>
               <p class="form-label mb-1" style="margin-bottom:4px;">Avg Latency</p>
-              <div id="stat-latency" class="font-display text-3xl font-bold text-ink" style="font-weight:700;">
+              <div id="stat-latency" class="font-display text-3xl font-bold text-gray-900 dark:text-gray-100" style="font-weight:700;">
                 <span class="skeleton" style="width:80px;height:32px;display:inline-block;">&nbsp;</span>
               </div>
             </div>
@@ -652,7 +756,7 @@
               <span class="ms ms-lg" style="color:#FF4F00;">timer</span>
             </div>
           </div>
-          <p class="text-xs text-ink-muted mt-2">Delivery response time</p>
+          <p class="text-xs text-gray-500 dark:text-[#9a9a9a] mt-2">Delivery response time</p>
         </div>
 
       </div>
@@ -660,10 +764,10 @@
 
     <!-- ══ ACTIVE DELIVERY STREAMS TABLE ══ -->
     <div class="card">
-      <div class="flex items-center justify-between px-6 py-4 border-b border-surface-border">
+      <div class="flex items-center justify-between px-6 py-4 border-b border-gray-200 dark:border-[#2a2a2a]">
         <div class="flex items-center gap-3">
           <span class="ms" style="color:#FF4F00;">stream</span>
-          <h2 class="font-display font-bold text-base text-ink">Active Delivery Streams</h2>
+          <h2 class="font-display font-bold text-base text-gray-900 dark:text-gray-100">Active Delivery Streams</h2>
           <span id="stream-count-badge"
             class="ml-1 px-2 py-0.5 rounded-full text-xs font-semibold"
             style="background:rgba(255,79,0,0.12);color:#FF6A2B;display:none;">
@@ -689,8 +793,8 @@
             <tr>
               <td colspan="5">
                 <div class="empty-state">
-                  <span class="ms" style="font-size:36px;color:#2a2a2a;">hourglass_empty</span>
-                  <p class="text-sm">Loading subscriptions…</p>
+                  <span class="ms text-gray-300 dark:text-[#2a2a2a]" style="font-size:36px;">hourglass_empty</span>
+                  <p class="text-sm text-gray-400 dark:text-[#4a4a4a]">Loading subscriptions…</p>
                 </div>
               </td>
             </tr>
@@ -705,8 +809,8 @@
         <span class="ms" style="color:#FF4F00;">verified_user</span>
       </div>
       <div>
-        <p class="font-semibold text-sm text-ink mb-1">Webhook Signature Verification</p>
-        <p class="text-sm text-ink-muted leading-relaxed">
+        <p class="font-semibold text-sm text-gray-900 dark:text-gray-100 mb-1">Webhook Signature Verification</p>
+        <p class="text-sm text-gray-600 dark:text-[#9a9a9a] leading-relaxed">
           All webhook deliveries include an <code class="text-brand font-mono text-xs px-1.5 py-0.5 rounded" style="background:rgba(255,79,0,0.1);">X-TriggersAPI-Signature</code>
           header containing an HMAC-SHA256 signature of the request body. Validate this header on your
           endpoint to ensure the payload originates from TriggersAPI and has not been tampered with.
@@ -773,16 +877,16 @@
   }
 
   function eventTypesDisplay(types) {
-    if (!types || !types.length) return '<span class="text-ink-faint text-xs italic">All events</span>';
+    if (!types || !types.length) return '<span class="text-gray-400 dark:text-[#4a4a4a] text-xs italic">All events</span>';
     const shown = types.slice(0, 2);
     const rest = types.length - shown.length;
-    let html = shown.map(t => `<span class="px-1.5 py-0.5 rounded text-xs font-mono" style="background:#252525;color:#d0d0d0;">${t}</span>`).join(' ');
-    if (rest > 0) html += ` <span class="text-ink-faint text-xs">+${rest} more</span>`;
+    let html = shown.map(t => `<span class="px-1.5 py-0.5 rounded text-xs font-mono bg-gray-100 dark:bg-[#252525] text-gray-700 dark:text-[#d0d0d0]">${t}</span>`).join(' ');
+    if (rest > 0) html += ` <span class="text-gray-400 dark:text-[#4a4a4a] text-xs">+${rest} more</span>`;
     return html;
   }
 
   function rateDisplay(rate) {
-    if (rate === null) return '<span class="text-ink-faint text-xs italic">No data</span>';
+    if (rate === null) return '<span class="text-gray-400 dark:text-[#4a4a4a] text-xs italic">No data</span>';
     const pct = (rate * 100).toFixed(1);
     const color = rate >= 0.9 ? '#22c55e' : rate >= 0.7 ? '#eab308' : '#ef4444';
     return `<span class="font-semibold" style="color:${color};">${pct}%</span>`;
@@ -849,9 +953,9 @@
         <tr>
           <td colspan="5">
             <div class="empty-state">
-              <span class="ms" style="font-size:40px;color:#2a2a2a;">notifications_off</span>
-              <p class="text-sm font-medium" style="color:#4a4a4a;">No subscriptions yet</p>
-              <p class="text-xs" style="color:#3a3a3a;">Create your first subscription using the form above.</p>
+              <span class="ms text-gray-300 dark:text-[#2a2a2a]" style="font-size:40px;">notifications_off</span>
+              <p class="text-sm font-medium text-gray-400 dark:text-[#4a4a4a]">No subscriptions yet</p>
+              <p class="text-xs text-gray-300 dark:text-[#3a3a3a]">Create your first subscription using the form above.</p>
             </div>
           </td>
         </tr>`;
@@ -863,15 +967,15 @@
       return `
         <tr data-id="${sub.id}">
           <td>
-            <div class="font-medium text-ink">${escHtml(sub.name)}</div>
-            <div class="text-xs text-ink-faint mt-0.5 font-mono truncate" style="max-width:240px;" title="${escHtml(sub.endpoint_url)}">${escHtml(sub.endpoint_url)}</div>
+            <div class="font-medium text-gray-900 dark:text-gray-100">${escHtml(sub.name)}</div>
+            <div class="text-xs text-gray-400 dark:text-[#4a4a4a] mt-0.5 font-mono truncate" style="max-width:240px;" title="${escHtml(sub.endpoint_url)}">${escHtml(sub.endpoint_url)}</div>
           </td>
           <td>${statusBadge(sub.status)}</td>
           <td>${eventTypesDisplay(sub.event_types)}</td>
           <td>
             <div class="flex items-center gap-2">
               ${rateDisplay(rate)}
-              <span class="text-xs text-ink-faint">(${(sub.success_count||0) + (sub.failure_count||0)} deliveries)</span>
+              <span class="text-xs text-gray-400 dark:text-[#4a4a4a]">(${(sub.success_count||0) + (sub.failure_count||0)} deliveries)</span>
             </div>
           </td>
           <td>

@@ -13,6 +13,7 @@
 
   <script>
     tailwind.config = {
+      darkMode: 'class',
       theme: {
         extend: {
           colors: {
@@ -241,21 +242,89 @@
       #mobile-bottom-nav { display: flex; }
       #main-content { margin-left: 0 !important; }
     }
+
+    /* ── Dark mode overrides for CSS-class-driven components ── */
+    .dark ::-webkit-scrollbar-track { background: #0f1018; }
+    .dark ::-webkit-scrollbar-thumb { background: #262733; }
+    .dark ::-webkit-scrollbar-thumb:hover { background: #3a3b4a; }
+
+    .dark .sidebar-link { color: #9ca3af; }
+    .dark .sidebar-link:hover { background: #1e1f2a; color: #f4f4f5; }
+    .dark .sidebar-link.active { background: rgba(255,79,0,0.15); color: #ff6a2b; }
+
+    .dark .top-nav-link { color: #9ca3af; }
+    .dark .top-nav-link:hover { background: #1e1f2a; color: #f4f4f5; }
+
+    .dark .bento-card {
+      background: #181922;
+      border-color: #262733;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+    }
+    .dark .bento-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.4); }
+
+    .dark .form-label { color: #6b7280; }
+    .dark .form-select {
+      background-color: #1a1b24;
+      border-color: #262733;
+      color: #e2e8f0;
+    }
+    .dark .form-select:focus {
+      border-color: #FF4F00;
+      background-color: #1a1b24;
+    }
+
+    .dark .btn-secondary {
+      background: #1a1b24;
+      color: #9ca3af;
+      border-color: #262733;
+    }
+    .dark .btn-secondary:hover { background: #1e1f2a; border-color: #3a3b4a; color: #f4f4f5; }
+
+    .dark .info-row { border-bottom-color: #1e1f2a; }
+    .dark .info-row-label { color: #9ca3af; }
+    .dark .info-row-value { color: #f4f4f5; }
+
+    .dark .mono-value {
+      color: #e2e8f0;
+      background: #1a1b24;
+      border-color: #262733;
+    }
+
+    .dark .cost-table th {
+      color: #6b7280;
+      border-bottom-color: #262733;
+      background: #1a1b24;
+    }
+    .dark .cost-table td {
+      border-bottom-color: #1e1f2a;
+      color: #9ca3af;
+    }
+    .dark .cost-table tbody tr:hover td { background: #1e1f2a; }
+
+    .dark .check-item {
+      background: #1a1b24;
+      border-color: #262733;
+    }
+
+    .dark .skeleton {
+      background: linear-gradient(90deg, #1e1f2a 25%, #262733 50%, #1e1f2a 75%);
+      background-size: 400% 100%;
+    }
   </style>
 </head>
-<body class="bg-slate-50 min-h-screen">
+<body class="bg-slate-50 dark:bg-[#0d0e14] min-h-screen">
 
 <!-- ============================================================
      TOP NAV
 ============================================================ -->
-<header class="fixed top-0 left-0 right-0 z-40 bg-white border-b border-slate-100 h-14 flex items-center px-4 md:px-6"
+<header class="fixed top-0 left-0 right-0 z-40 bg-white dark:bg-[#13141c] border-b border-slate-100 dark:border-[#1f2029] h-14 flex items-center px-4 md:px-6"
         style="box-shadow:0 1px 3px rgba(0,0,0,0.06);">
   <div class="flex items-center gap-2 w-56 shrink-0">
     <div class="w-7 h-7 rounded-lg flex items-center justify-center"
          style="background:linear-gradient(135deg,#FF4F00,#a93100);">
       <span class="material-symbols-outlined filled text-white" style="font-size:16px;">bolt</span>
     </div>
-    <span class="font-display font-extrabold text-slate-900 text-base tracking-tight">TriggersAPI</span>
+    <span class="font-display font-extrabold text-slate-900 dark:text-gray-100 text-base tracking-tight">TriggersAPI</span>
   </div>
 
   <nav class="hidden md:flex items-center gap-1 ml-6">
@@ -265,11 +334,11 @@
   </nav>
 
   <div class="ml-auto flex items-center gap-3">
-    <span class="hidden sm:inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
+    <span class="hidden sm:inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1 rounded-full bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-900/50">
       <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse inline-block"></span>
       Production
     </span>
-    <button class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 hover:bg-slate-200 transition-colors">
+    <button class="w-8 h-8 rounded-full bg-slate-100 dark:bg-[#1a1b24] flex items-center justify-center text-slate-500 dark:text-gray-400 hover:bg-slate-200 dark:hover:bg-[#1e1f2a] transition-colors">
       <span class="material-symbols-outlined" style="font-size:18px;">notifications</span>
     </button>
     <div class="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold"
@@ -283,20 +352,20 @@
      SIDEBAR
 ============================================================ -->
 <aside id="sidebar"
-       class="fixed top-14 left-0 bottom-0 w-56 bg-white border-r border-slate-100 flex flex-col z-30 overflow-y-auto"
+       class="fixed top-14 left-0 bottom-0 w-56 bg-white dark:bg-[#0f1018] border-r border-slate-100 dark:border-[#1f2029] flex flex-col z-30 overflow-y-auto"
        style="box-shadow:1px 0 0 #f1f5f9;">
   <!-- Hub label -->
   <div class="px-4 pt-5 pb-3">
     <div class="flex items-center gap-2 px-2 mb-1">
       <span class="material-symbols-outlined text-brand" style="font-size:15px;">bolt</span>
-      <span class="text-xs font-semibold text-slate-400 uppercase tracking-widest">Developer Hub</span>
+      <span class="text-xs font-semibold text-slate-400 dark:text-gray-500 uppercase tracking-widest">Developer Hub</span>
     </div>
     <div class="px-2">
-      <span class="text-xs text-slate-300 font-medium">v1.0.0</span>
+      <span class="text-xs text-slate-300 dark:text-gray-600 font-medium">v1.0.0</span>
     </div>
   </div>
 
-  <div class="h-px bg-slate-100 mx-4 mb-3"></div>
+  <div class="h-px bg-slate-100 dark:bg-[#1f2029] mx-4 mb-3"></div>
 
   <!-- Nav links -->
   <nav class="flex flex-col gap-1 px-3">
@@ -322,7 +391,7 @@
     </a>
   </nav>
 
-  <div class="h-px bg-slate-100 mx-4 my-4"></div>
+  <div class="h-px bg-slate-100 dark:bg-[#1f2029] mx-4 my-4"></div>
 
   <!-- Create Trigger CTA -->
   <div class="px-3 pb-2">
@@ -335,9 +404,9 @@
   </div>
 
   <div class="mt-auto px-3 pb-5 pt-4">
-    <div class="rounded-xl p-3 text-xs" style="background:#fff3ee; border:1px solid #ffcaab;">
-      <p class="font-semibold text-orange-800 mb-0.5">System Status</p>
-      <p id="sidebar-status" class="text-orange-600 flex items-center gap-1">
+    <div class="rounded-xl p-3 text-xs dark:bg-[#1a1b24] dark:border dark:border-[#262733]" style="background:#fff3ee; border:1px solid #ffcaab;">
+      <p class="font-semibold text-orange-800 dark:text-gray-100 mb-0.5">System Status</p>
+      <p id="sidebar-status" class="text-orange-600 dark:text-gray-400 flex items-center gap-1">
         <span class="w-1.5 h-1.5 rounded-full bg-slate-300 inline-block" id="sidebar-dot"></span>
         Checking…
       </p>
@@ -354,11 +423,11 @@
     <!-- Page header -->
     <div class="flex items-center justify-between mb-8">
       <div>
-        <h1 class="font-display text-2xl font-bold text-slate-900 mb-1">Project Settings</h1>
-        <p class="text-sm text-slate-500">Configure your TriggersAPI instance, LLM models, and integrations.</p>
+        <h1 class="font-display text-2xl font-bold text-slate-900 dark:text-gray-100 mb-1">Project Settings</h1>
+        <p class="text-sm text-slate-500 dark:text-gray-400">Configure your TriggersAPI instance, LLM models, and integrations.</p>
       </div>
       <div class="hidden sm:flex items-center gap-2">
-        <span class="text-xs text-slate-400" id="health-label">Fetching status…</span>
+        <span class="text-xs text-slate-400 dark:text-gray-500" id="health-label">Fetching status…</span>
       </div>
     </div>
 
@@ -375,8 +444,8 @@
             <span class="material-symbols-outlined filled text-brand" style="font-size:20px;">psychology</span>
           </div>
           <div>
-            <h2 class="font-display font-bold text-slate-900 text-base">LLM Configuration</h2>
-            <p class="text-xs text-slate-400">Choose and test the AI model for your API</p>
+            <h2 class="font-display font-bold text-slate-900 dark:text-gray-100 text-base">LLM Configuration</h2>
+            <p class="text-xs text-slate-400 dark:text-gray-400">Choose and test the AI model for your API</p>
           </div>
         </div>
 
@@ -391,24 +460,24 @@
         </div>
 
         <!-- Model detail row -->
-        <div id="model-detail" class="rounded-xl p-3 text-sm hidden" style="background:#f8fafc; border:1px solid #f1f5f9;">
+        <div id="model-detail" class="rounded-xl p-3 text-sm hidden dark:bg-[#1a1b24] dark:border dark:border-[#262733]" style="background:#f8fafc; border:1px solid #f1f5f9;">
           <div class="flex items-center justify-between mb-2">
-            <span class="font-semibold text-slate-700 text-xs uppercase tracking-wider">Selected Model</span>
+            <span class="font-semibold text-slate-700 dark:text-gray-300 text-xs uppercase tracking-wider">Selected Model</span>
             <span id="model-detail-name" class="text-xs font-medium text-brand bg-brand-50 px-2 py-0.5 rounded-full"></span>
           </div>
-          <div class="grid grid-cols-2 gap-2 text-xs text-slate-600">
+          <div class="grid grid-cols-2 gap-2 text-xs text-slate-600 dark:text-gray-400">
             <div class="flex flex-col gap-0.5">
-              <span class="text-slate-400 font-medium">Input cost</span>
-              <span id="model-input-cost" class="font-semibold text-slate-700">—</span>
+              <span class="text-slate-400 dark:text-gray-500 font-medium">Input cost</span>
+              <span id="model-input-cost" class="font-semibold text-slate-700 dark:text-gray-200">—</span>
             </div>
             <div class="flex flex-col gap-0.5">
-              <span class="text-slate-400 font-medium">Output cost</span>
-              <span id="model-output-cost" class="font-semibold text-slate-700">—</span>
+              <span class="text-slate-400 dark:text-gray-500 font-medium">Output cost</span>
+              <span id="model-output-cost" class="font-semibold text-slate-700 dark:text-gray-200">—</span>
             </div>
           </div>
-          <div class="mt-3 pt-3 border-t border-slate-200">
-            <span class="text-slate-400 text-xs font-medium">Est. cost per conversation (~500 in / ~300 out tokens)</span>
-            <p id="est-cost" class="text-sm font-bold text-slate-800 mt-0.5">—</p>
+          <div class="mt-3 pt-3 border-t border-slate-200 dark:border-[#262733]">
+            <span class="text-slate-400 dark:text-gray-500 text-xs font-medium">Est. cost per conversation (~500 in / ~300 out tokens)</span>
+            <p id="est-cost" class="text-sm font-bold text-slate-800 dark:text-gray-100 mt-0.5">—</p>
           </div>
         </div>
 
@@ -418,11 +487,11 @@
             <span class="material-symbols-outlined filled" style="font-size:17px;">play_circle</span>
             Test Model
           </button>
-          <div id="test-status" class="text-xs text-slate-500 hidden"></div>
+          <div id="test-status" class="text-xs text-slate-500 dark:text-gray-400 hidden"></div>
         </div>
 
         <!-- Test result -->
-        <div id="test-result" class="hidden rounded-xl p-3 text-xs font-mono text-slate-600"
+        <div id="test-result" class="hidden rounded-xl p-3 text-xs font-mono text-slate-600 dark:text-gray-400 dark:bg-[#1a1b24] dark:border dark:border-[#262733]"
              style="background:#f8fafc; border:1px solid #f1f5f9; white-space:pre-wrap; max-height:120px; overflow-y:auto; line-height:1.6;">
         </div>
       </div>
@@ -435,8 +504,8 @@
             <span class="material-symbols-outlined filled text-emerald-500" style="font-size:20px;">monitoring</span>
           </div>
           <div>
-            <h2 class="font-display font-bold text-slate-900 text-base">System Information</h2>
-            <p class="text-xs text-slate-400">Runtime details and delivery guarantees</p>
+            <h2 class="font-display font-bold text-slate-900 dark:text-gray-100 text-base">System Information</h2>
+            <p class="text-xs text-slate-400 dark:text-gray-400">Runtime details and delivery guarantees</p>
           </div>
         </div>
 
@@ -446,14 +515,14 @@
         </div>
         <div class="info-row">
           <span class="info-row-label">Environment</span>
-          <span class="inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
+          <span class="inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1 rounded-full bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-900/50">
             <span class="status-dot green"></span>
             Production
           </span>
         </div>
         <div class="info-row">
           <span class="info-row-label">Database</span>
-          <span class="info-row-value">SQLite <span class="text-slate-400 font-normal text-xs">(WAL mode)</span></span>
+          <span class="info-row-value">SQLite <span class="text-slate-400 dark:text-gray-500 font-normal text-xs">(WAL mode)</span></span>
         </div>
         <div class="info-row">
           <span class="info-row-label">Delivery Model</span>
@@ -463,15 +532,15 @@
           <span class="info-row-label">Retry Strategy</span>
           <span class="info-row-value text-right text-xs leading-relaxed">
             Exponential backoff<br>
-            <span class="text-slate-400 font-normal">1s · 2s · 4s · 8s · 16s</span>
+            <span class="text-slate-400 dark:text-gray-500 font-normal">1s · 2s · 4s · 8s · 16s</span>
           </span>
         </div>
 
-        <div class="mt-3 pt-3 border-t border-slate-100">
+        <div class="mt-3 pt-3 border-t border-slate-100 dark:border-[#262733]">
           <div class="flex items-center gap-2 mb-2">
-            <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Health Check</span>
+            <span class="text-xs font-semibold text-slate-400 dark:text-gray-500 uppercase tracking-wider">Health Check</span>
           </div>
-          <div id="health-block" class="rounded-xl p-3 text-xs" style="background:#f8fafc; border:1px solid #f1f5f9;">
+          <div id="health-block" class="rounded-xl p-3 text-xs dark:bg-[#1a1b24] dark:border dark:border-[#262733]" style="background:#f8fafc; border:1px solid #f1f5f9;">
             <div class="flex items-center gap-2">
               <span class="skeleton w-2 h-2 rounded-full">&nbsp;</span>
               <span class="skeleton w-28 h-3">&nbsp;</span>
@@ -492,78 +561,78 @@
             <span class="material-symbols-outlined filled text-blue-500" style="font-size:20px;">description</span>
           </div>
           <div>
-            <h2 class="font-display font-bold text-slate-900 text-base">Project Specification</h2>
-            <p class="text-xs text-slate-400">Full technical overview of TriggersAPI</p>
+            <h2 class="font-display font-bold text-slate-900 dark:text-gray-100 text-base">Project Specification</h2>
+            <p class="text-xs text-slate-400 dark:text-gray-400">Full technical overview of TriggersAPI</p>
           </div>
         </div>
-        <span class="material-symbols-outlined text-slate-400" id="spec-chevron" style="font-size:22px;">expand_more</span>
+        <span class="material-symbols-outlined text-slate-400 dark:text-gray-500" id="spec-chevron" style="font-size:22px;">expand_more</span>
       </button>
 
       <div id="spec-body">
-        <div class="mt-5 pt-5 border-t border-slate-100 prose prose-sm max-w-none text-slate-600 text-sm leading-relaxed space-y-4">
-          <div class="rounded-xl p-4" style="background:#fff3ee; border:1px solid #ffcaab;">
-            <p class="font-semibold text-orange-800 text-sm mb-1">TriggersAPI — Webhook Event Bus</p>
-            <p class="text-orange-700 text-xs">A lightweight, production-ready event ingestion and delivery platform built with FastAPI and SQLite.</p>
+        <div class="mt-5 pt-5 border-t border-slate-100 dark:border-[#262733] prose prose-sm max-w-none text-slate-600 dark:text-gray-400 text-sm leading-relaxed space-y-4">
+          <div class="rounded-xl p-4 dark:bg-orange-950/40 dark:border dark:border-orange-900/50" style="background:#fff3ee; border:1px solid #ffcaab;">
+            <p class="font-semibold text-orange-800 dark:text-orange-300 text-sm mb-1">TriggersAPI — Webhook Event Bus</p>
+            <p class="text-orange-700 dark:text-orange-400 text-xs">A lightweight, production-ready event ingestion and delivery platform built with FastAPI and SQLite.</p>
           </div>
 
           <div>
-            <h3 class="font-display font-semibold text-slate-800 text-sm mb-2">Overview</h3>
-            <p class="text-slate-600 text-sm">TriggersAPI is a webhook event bus that decouples event producers from event consumers. It provides a structured pipeline for ingesting, queuing, and reliably delivering events to registered HTTP subscribers.</p>
+            <h3 class="font-display font-semibold text-slate-800 dark:text-gray-200 text-sm mb-2">Overview</h3>
+            <p class="text-slate-600 dark:text-gray-400 text-sm">TriggersAPI is a webhook event bus that decouples event producers from event consumers. It provides a structured pipeline for ingesting, queuing, and reliably delivering events to registered HTTP subscribers.</p>
           </div>
 
           <div>
-            <h3 class="font-display font-semibold text-slate-800 text-sm mb-2">Event Lifecycle</h3>
+            <h3 class="font-display font-semibold text-slate-800 dark:text-gray-200 text-sm mb-2">Event Lifecycle</h3>
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-              <div class="rounded-lg p-3" style="background:#f8fafc; border:1px solid #f1f5f9;">
+              <div class="rounded-lg p-3 dark:bg-[#1a1b24] dark:border dark:border-[#262733]" style="background:#f8fafc; border:1px solid #f1f5f9;">
                 <div class="flex items-center gap-2 mb-1">
                   <span class="material-symbols-outlined filled text-blue-400" style="font-size:16px;">input</span>
-                  <span class="font-semibold text-slate-700 text-xs">1. Ingest</span>
+                  <span class="font-semibold text-slate-700 dark:text-gray-200 text-xs">1. Ingest</span>
                 </div>
-                <p class="text-xs text-slate-500">Events arrive via <code class="bg-slate-200 rounded px-1">POST /api/v1/events/{trigger_id}</code>. Each event is assigned a UUID, timestamped, and persisted to SQLite in WAL mode.</p>
+                <p class="text-xs text-slate-500 dark:text-gray-400">Events arrive via <code class="bg-slate-200 dark:bg-[#262733] dark:text-gray-300 rounded px-1">POST /api/v1/events/{trigger_id}</code>. Each event is assigned a UUID, timestamped, and persisted to SQLite in WAL mode.</p>
               </div>
-              <div class="rounded-lg p-3" style="background:#f8fafc; border:1px solid #f1f5f9;">
+              <div class="rounded-lg p-3 dark:bg-[#1a1b24] dark:border dark:border-[#262733]" style="background:#f8fafc; border:1px solid #f1f5f9;">
                 <div class="flex items-center gap-2 mb-1">
                   <span class="material-symbols-outlined filled text-amber-400" style="font-size:16px;">sync</span>
-                  <span class="font-semibold text-slate-700 text-xs">2. Queue</span>
+                  <span class="font-semibold text-slate-700 dark:text-gray-200 text-xs">2. Queue</span>
                 </div>
-                <p class="text-xs text-slate-500">The background delivery worker polls for queued events and fan-outs to all active subscriptions. Pending deliveries are tracked with status.</p>
+                <p class="text-xs text-slate-500 dark:text-gray-400">The background delivery worker polls for queued events and fan-outs to all active subscriptions. Pending deliveries are tracked with status.</p>
               </div>
-              <div class="rounded-lg p-3" style="background:#f8fafc; border:1px solid #f1f5f9;">
+              <div class="rounded-lg p-3 dark:bg-[#1a1b24] dark:border dark:border-[#262733]" style="background:#f8fafc; border:1px solid #f1f5f9;">
                 <div class="flex items-center gap-2 mb-1">
                   <span class="material-symbols-outlined filled text-emerald-500" style="font-size:16px;">send</span>
-                  <span class="font-semibold text-slate-700 text-xs">3. Deliver</span>
+                  <span class="font-semibold text-slate-700 dark:text-gray-200 text-xs">3. Deliver</span>
                 </div>
-                <p class="text-xs text-slate-500">Events are POSTed to subscriber webhook URLs. Failed deliveries are retried with exponential backoff (1s, 2s, 4s, 8s, 16s). At-least-once guarantee.</p>
+                <p class="text-xs text-slate-500 dark:text-gray-400">Events are POSTed to subscriber webhook URLs. Failed deliveries are retried with exponential backoff (1s, 2s, 4s, 8s, 16s). At-least-once guarantee.</p>
               </div>
             </div>
           </div>
 
           <div>
-            <h3 class="font-display font-semibold text-slate-800 text-sm mb-2">Subscription Model</h3>
-            <p class="text-slate-600 text-sm">Subscribers register a webhook URL and optionally filter by trigger ID or event type. Each subscription can be independently paused, resumed, or deleted. The system supports fan-out to multiple subscribers per trigger, enabling pub/sub patterns.</p>
+            <h3 class="font-display font-semibold text-slate-800 dark:text-gray-200 text-sm mb-2">Subscription Model</h3>
+            <p class="text-slate-600 dark:text-gray-400 text-sm">Subscribers register a webhook URL and optionally filter by trigger ID or event type. Each subscription can be independently paused, resumed, or deleted. The system supports fan-out to multiple subscribers per trigger, enabling pub/sub patterns.</p>
           </div>
 
           <div>
-            <h3 class="font-display font-semibold text-slate-800 text-sm mb-2">AI Integration</h3>
-            <p class="text-slate-600 text-sm">TriggersAPI includes an AI chat layer powered by OpenRouter. The <code class="bg-slate-100 rounded px-1 font-mono text-xs">POST /api/v1/chat</code> endpoint routes to the configured LLM model with optional Langfuse observability tracing. Conversation context is maintained per session.</p>
+            <h3 class="font-display font-semibold text-slate-800 dark:text-gray-200 text-sm mb-2">AI Integration</h3>
+            <p class="text-slate-600 dark:text-gray-400 text-sm">TriggersAPI includes an AI chat layer powered by OpenRouter. The <code class="bg-slate-100 dark:bg-[#262733] dark:text-gray-300 rounded px-1 font-mono text-xs">POST /api/v1/chat</code> endpoint routes to the configured LLM model with optional Langfuse observability tracing. Conversation context is maintained per session.</p>
           </div>
 
           <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
-            <div class="rounded-lg p-3 text-center" style="background:#f0fdf4; border:1px solid #bbf7d0;">
-              <p class="font-display font-bold text-emerald-700 text-lg">At-Least-Once</p>
-              <p class="text-xs text-emerald-600">Delivery guarantee</p>
+            <div class="rounded-lg p-3 text-center dark:bg-emerald-950/40 dark:border dark:border-emerald-900/50" style="background:#f0fdf4; border:1px solid #bbf7d0;">
+              <p class="font-display font-bold text-emerald-700 dark:text-emerald-400 text-lg">At-Least-Once</p>
+              <p class="text-xs text-emerald-600 dark:text-emerald-500">Delivery guarantee</p>
             </div>
-            <div class="rounded-lg p-3 text-center" style="background:#eff6ff; border:1px solid #bfdbfe;">
-              <p class="font-display font-bold text-blue-700 text-lg">WAL Mode</p>
-              <p class="text-xs text-blue-600">SQLite durability</p>
+            <div class="rounded-lg p-3 text-center dark:bg-blue-950/40 dark:border dark:border-blue-900/50" style="background:#eff6ff; border:1px solid #bfdbfe;">
+              <p class="font-display font-bold text-blue-700 dark:text-blue-400 text-lg">WAL Mode</p>
+              <p class="text-xs text-blue-600 dark:text-blue-500">SQLite durability</p>
             </div>
-            <div class="rounded-lg p-3 text-center" style="background:#fff3ee; border:1px solid #ffcaab;">
-              <p class="font-display font-bold text-orange-700 text-lg">5 Retries</p>
-              <p class="text-xs text-orange-600">Max retry attempts</p>
+            <div class="rounded-lg p-3 text-center dark:bg-orange-950/40 dark:border dark:border-orange-900/50" style="background:#fff3ee; border:1px solid #ffcaab;">
+              <p class="font-display font-bold text-orange-700 dark:text-orange-400 text-lg">5 Retries</p>
+              <p class="text-xs text-orange-600 dark:text-orange-500">Max retry attempts</p>
             </div>
-            <div class="rounded-lg p-3 text-center" style="background:#faf5ff; border:1px solid #e9d5ff;">
-              <p class="font-display font-bold text-purple-700 text-lg">OpenRouter</p>
-              <p class="text-xs text-purple-600">LLM gateway</p>
+            <div class="rounded-lg p-3 text-center dark:bg-purple-950/40 dark:border dark:border-purple-900/50" style="background:#faf5ff; border:1px solid #e9d5ff;">
+              <p class="font-display font-bold text-purple-700 dark:text-purple-400 text-lg">OpenRouter</p>
+              <p class="text-xs text-purple-600 dark:text-purple-500">LLM gateway</p>
             </div>
           </div>
         </div>
@@ -583,16 +652,16 @@
             <span class="material-symbols-outlined filled text-purple-500" style="font-size:20px;">troubleshoot</span>
           </div>
           <div>
-            <h2 class="font-display font-bold text-slate-900 text-base">AI Observability</h2>
-            <p class="text-xs text-slate-400">Langfuse tracing for LLM calls</p>
+            <h2 class="font-display font-bold text-slate-900 dark:text-gray-100 text-base">AI Observability</h2>
+            <p class="text-xs text-slate-400 dark:text-gray-400">Langfuse tracing for LLM calls</p>
           </div>
         </div>
 
-        <div id="langfuse-status-block" class="rounded-xl p-4" style="background:#f8fafc; border:1px solid #f1f5f9;">
+        <div id="langfuse-status-block" class="rounded-xl p-4 dark:bg-[#1a1b24] dark:border dark:border-[#262733]" style="background:#f8fafc; border:1px solid #f1f5f9;">
           <div class="flex items-center justify-between mb-3">
             <div class="flex items-center gap-2">
               <span id="langfuse-dot" class="status-dot grey"></span>
-              <span id="langfuse-label" class="text-sm font-semibold text-slate-700">Checking Langfuse…</span>
+              <span id="langfuse-label" class="text-sm font-semibold text-slate-700 dark:text-gray-200">Checking Langfuse…</span>
             </div>
             <a href="https://us.cloud.langfuse.com" target="_blank" rel="noopener"
                class="text-xs font-medium text-brand hover:underline flex items-center gap-1">
@@ -600,15 +669,15 @@
               <span class="material-symbols-outlined" style="font-size:13px;">open_in_new</span>
             </a>
           </div>
-          <p id="langfuse-desc" class="text-xs text-slate-500 leading-relaxed">
+          <p id="langfuse-desc" class="text-xs text-slate-500 dark:text-gray-400 leading-relaxed">
             LLM traces are automatically captured when Langfuse is configured. Each chat request creates a trace with input tokens, output tokens, model used, and latency.
           </p>
         </div>
 
-        <div class="rounded-xl p-3 text-xs text-slate-600" style="background:#f8fafc; border:1px solid #f1f5f9;">
+        <div class="rounded-xl p-3 text-xs text-slate-600 dark:text-gray-400 dark:bg-[#1a1b24] dark:border dark:border-[#262733]" style="background:#f8fafc; border:1px solid #f1f5f9;">
           <div class="flex items-start gap-2">
-            <span class="material-symbols-outlined text-slate-400" style="font-size:15px;">info</span>
-            <span>Set <code class="bg-slate-200 rounded px-1 font-mono">LANGFUSE_PUBLIC_KEY</code>, <code class="bg-slate-200 rounded px-1 font-mono">LANGFUSE_SECRET_KEY</code>, and <code class="bg-slate-200 rounded px-1 font-mono">LANGFUSE_HOST</code> in your environment to enable tracing.</span>
+            <span class="material-symbols-outlined text-slate-400 dark:text-gray-500" style="font-size:15px;">info</span>
+            <span>Set <code class="bg-slate-200 dark:bg-[#262733] dark:text-gray-300 rounded px-1 font-mono">LANGFUSE_PUBLIC_KEY</code>, <code class="bg-slate-200 dark:bg-[#262733] dark:text-gray-300 rounded px-1 font-mono">LANGFUSE_SECRET_KEY</code>, and <code class="bg-slate-200 dark:bg-[#262733] dark:text-gray-300 rounded px-1 font-mono">LANGFUSE_HOST</code> in your environment to enable tracing.</span>
           </div>
         </div>
 
@@ -627,12 +696,12 @@
             <span class="material-symbols-outlined filled text-amber-500" style="font-size:20px;">payments</span>
           </div>
           <div>
-            <h2 class="font-display font-bold text-slate-900 text-base">Cost Dashboard</h2>
-            <p class="text-xs text-slate-400">Estimated spend for your deployment</p>
+            <h2 class="font-display font-bold text-slate-900 dark:text-gray-100 text-base">Cost Dashboard</h2>
+            <p class="text-xs text-slate-400 dark:text-gray-400">Estimated spend for your deployment</p>
           </div>
         </div>
 
-        <div class="overflow-x-auto rounded-xl" style="border:1px solid #f1f5f9;">
+        <div class="overflow-x-auto rounded-xl dark:border dark:border-[#262733]" style="border:1px solid #f1f5f9;">
           <table class="cost-table">
             <thead>
               <tr>
@@ -643,7 +712,7 @@
             </thead>
             <tbody id="cost-table-body">
               <tr>
-                <td colspan="3" class="text-center text-slate-400 py-6">
+                <td colspan="3" class="text-center text-slate-400 dark:text-gray-500 py-6">
                   <span class="skeleton inline-block w-40 h-4">&nbsp;</span>
                 </td>
               </tr>
@@ -660,9 +729,9 @@
             <span class="info-row-label text-xs">Hosting</span>
             <span class="info-row-value text-sm">Railway</span>
           </div>
-          <div class="info-row" style="padding:8px 0; border-top:2px solid #f1f5f9; margin-top:4px;">
-            <span class="font-semibold text-slate-700 text-sm">Est. Monthly Total</span>
-            <span id="monthly-total" class="font-display font-bold text-slate-900 text-base">—</span>
+          <div class="info-row dark:border-t-[#262733]" style="padding:8px 0; border-top:2px solid #f1f5f9; margin-top:4px;">
+            <span class="font-semibold text-slate-700 dark:text-gray-200 text-sm">Est. Monthly Total</span>
+            <span id="monthly-total" class="font-display font-bold text-slate-900 dark:text-gray-100 text-base">—</span>
           </div>
         </div>
       </div>
@@ -678,8 +747,8 @@
           <span class="material-symbols-outlined filled text-emerald-500" style="font-size:20px;">key</span>
         </div>
         <div>
-          <h2 class="font-display font-bold text-slate-900 text-base">Quick Configuration</h2>
-          <p class="text-xs text-slate-400">API credentials, base URL, and environment variable status</p>
+          <h2 class="font-display font-bold text-slate-900 dark:text-gray-100 text-base">Quick Configuration</h2>
+          <p class="text-xs text-slate-400 dark:text-gray-400">API credentials, base URL, and environment variable status</p>
         </div>
       </div>
 
@@ -690,34 +759,34 @@
           <div>
             <label class="form-label">API Key</label>
             <div class="flex items-center gap-2">
-              <div class="flex-1 flex items-center rounded-xl border border-slate-200 bg-slate-50 overflow-hidden"
+              <div class="flex-1 flex items-center rounded-xl border border-slate-200 dark:border-[#262733] bg-slate-50 dark:bg-[#1a1b24] overflow-hidden"
                    style="font-family:'SF Mono','Fira Code',monospace; font-size:12.5px;">
-                <span id="api-key-display" class="flex-1 px-3 py-2.5 text-slate-500 select-all truncate">
+                <span id="api-key-display" class="flex-1 px-3 py-2.5 text-slate-500 dark:text-gray-400 select-all truncate">
                   sk-••••••••••••••••••••••••••••••••••
                 </span>
                 <button onclick="toggleApiKey()" id="api-key-reveal-btn"
-                        class="px-3 py-2.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-colors border-l border-slate-200">
+                        class="px-3 py-2.5 text-slate-400 dark:text-gray-500 hover:text-slate-600 dark:hover:text-gray-300 hover:bg-slate-100 dark:hover:bg-[#1e1f2a] transition-colors border-l border-slate-200 dark:border-[#262733]">
                   <span class="material-symbols-outlined" id="api-key-eye" style="font-size:18px;">visibility</span>
                 </button>
                 <button onclick="copyApiKey()"
-                        class="px-3 py-2.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-colors border-l border-slate-200">
+                        class="px-3 py-2.5 text-slate-400 dark:text-gray-500 hover:text-slate-600 dark:hover:text-gray-300 hover:bg-slate-100 dark:hover:bg-[#1e1f2a] transition-colors border-l border-slate-200 dark:border-[#262733]">
                   <span class="material-symbols-outlined" style="font-size:18px;">content_copy</span>
                 </button>
               </div>
             </div>
-            <p class="text-xs text-slate-400 mt-1.5">Pass as <code class="bg-slate-100 rounded px-1 font-mono">X-API-Key</code> header or <code class="bg-slate-100 rounded px-1 font-mono">?api_key=</code> query param.</p>
+            <p class="text-xs text-slate-400 dark:text-gray-500 mt-1.5">Pass as <code class="bg-slate-100 dark:bg-[#262733] dark:text-gray-300 rounded px-1 font-mono">X-API-Key</code> header or <code class="bg-slate-100 dark:bg-[#262733] dark:text-gray-300 rounded px-1 font-mono">?api_key=</code> query param.</p>
           </div>
 
           <!-- Base URL -->
           <div>
             <label class="form-label">Base URL</label>
-            <div class="flex items-center rounded-xl border border-slate-200 bg-slate-50 overflow-hidden">
+            <div class="flex items-center rounded-xl border border-slate-200 dark:border-[#262733] bg-slate-50 dark:bg-[#1a1b24] overflow-hidden">
               <span id="base-url-display"
-                    class="flex-1 px-3 py-2.5 text-slate-700 text-sm font-mono truncate select-all">
+                    class="flex-1 px-3 py-2.5 text-slate-700 dark:text-gray-200 text-sm font-mono truncate select-all">
                 Loading…
               </span>
               <button onclick="copyBaseUrl()"
-                      class="px-3 py-2.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-colors border-l border-slate-200">
+                      class="px-3 py-2.5 text-slate-400 dark:text-gray-500 hover:text-slate-600 dark:hover:text-gray-300 hover:bg-slate-100 dark:hover:bg-[#1e1f2a] transition-colors border-l border-slate-200 dark:border-[#262733]">
                 <span class="material-symbols-outlined" style="font-size:18px;">content_copy</span>
               </button>
             </div>
@@ -750,18 +819,18 @@
 
 <!-- Mobile bottom nav -->
 <nav id="mobile-bottom-nav"
-     class="fixed bottom-0 left-0 right-0 z-40 bg-white border-t border-slate-100 px-2 py-2"
+     class="fixed bottom-0 left-0 right-0 z-40 bg-white dark:bg-[#13141c] border-t border-slate-100 dark:border-[#1f2029] px-2 py-2"
      style="box-shadow:0 -1px 4px rgba(0,0,0,0.06);">
   <div class="flex justify-around">
-    <a href="/" class="flex flex-col items-center gap-0.5 px-3 py-1 text-slate-400">
+    <a href="/" class="flex flex-col items-center gap-0.5 px-3 py-1 text-slate-400 dark:text-gray-500">
       <span class="material-symbols-outlined" style="font-size:22px;">dashboard</span>
       <span class="text-xs">Dashboard</span>
     </a>
-    <a href="/explorer" class="flex flex-col items-center gap-0.5 px-3 py-1 text-slate-400">
+    <a href="/explorer" class="flex flex-col items-center gap-0.5 px-3 py-1 text-slate-400 dark:text-gray-500">
       <span class="material-symbols-outlined" style="font-size:22px;">manage_search</span>
       <span class="text-xs">Explorer</span>
     </a>
-    <a href="/subscriptions-page" class="flex flex-col items-center gap-0.5 px-3 py-1 text-slate-400">
+    <a href="/subscriptions-page" class="flex flex-col items-center gap-0.5 px-3 py-1 text-slate-400 dark:text-gray-500">
       <span class="material-symbols-outlined" style="font-size:22px;">webhook</span>
       <span class="text-xs">Subs</span>
     </a>
@@ -825,11 +894,11 @@
         <div class="space-y-1.5">
           <div class="flex items-center gap-2">
             <span class="status-dot ${isOk ? 'green' : 'yellow'}"></span>
-            <span class="font-semibold text-slate-700">${isOk ? 'All systems operational' : 'Degraded'}</span>
+            <span class="font-semibold text-slate-700 dark:text-gray-200">${isOk ? 'All systems operational' : 'Degraded'}</span>
           </div>
-          ${data.version ? `<div class="text-slate-400">Version: <span class="font-medium text-slate-600">${data.version}</span></div>` : ''}
-          ${data.uptime_seconds != null ? `<div class="text-slate-400">Uptime: <span class="font-medium text-slate-600">${formatUptime(data.uptime_seconds)}</span></div>` : ''}
-          ${data.database ? `<div class="text-slate-400">DB: <span class="font-medium text-slate-600">${data.database}</span></div>` : ''}
+          ${data.version ? `<div class="text-slate-400 dark:text-gray-500">Version: <span class="font-medium text-slate-600 dark:text-gray-300">${data.version}</span></div>` : ''}
+          ${data.uptime_seconds != null ? `<div class="text-slate-400 dark:text-gray-500">Uptime: <span class="font-medium text-slate-600 dark:text-gray-300">${formatUptime(data.uptime_seconds)}</span></div>` : ''}
+          ${data.database ? `<div class="text-slate-400 dark:text-gray-500">DB: <span class="font-medium text-slate-600 dark:text-gray-300">${data.database}</span></div>` : ''}
         </div>
       `;
 
@@ -850,9 +919,9 @@
       document.getElementById('health-block').innerHTML = `
         <div class="flex items-center gap-2">
           <span class="status-dot red"></span>
-          <span class="text-slate-600 font-medium">Health check failed</span>
+          <span class="text-slate-600 dark:text-gray-300 font-medium">Health check failed</span>
         </div>
-        <p class="text-slate-400 mt-1">Could not reach <code class="bg-slate-200 rounded px-1 font-mono">/health</code></p>
+        <p class="text-slate-400 dark:text-gray-500 mt-1">Could not reach <code class="bg-slate-200 dark:bg-[#262733] dark:text-gray-300 rounded px-1 font-mono">/health</code></p>
       `;
       document.getElementById('health-label').textContent = 'Health check failed';
       document.getElementById('sidebar-status').textContent = 'Unreachable';
@@ -914,7 +983,7 @@
       const sel = document.getElementById('model-select');
       sel.innerHTML = '<option value="">Failed to load models</option>';
       document.getElementById('cost-table-body').innerHTML = `
-        <tr><td colspan="3" class="text-center text-slate-400 py-4 text-xs">Could not fetch model list</td></tr>
+        <tr><td colspan="3" class="text-center text-slate-400 dark:text-gray-500 py-4 text-xs">Could not fetch model list</td></tr>
       `;
     }
   }
@@ -960,7 +1029,7 @@
   function buildCostTable() {
     const tbody = document.getElementById('cost-table-body');
     if (allModels.length === 0) {
-      tbody.innerHTML = '<tr><td colspan="3" class="text-center text-slate-400 py-4 text-xs">No models</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="3" class="text-center text-slate-400 dark:text-gray-500 py-4 text-xs">No models</td></tr>';
       return;
     }
 
@@ -982,12 +1051,12 @@
         <tr>
           <td>
             <div class="flex items-center gap-2">
-              ${isSelected ? '<span class="w-1.5 h-1.5 rounded-full bg-brand inline-block shrink-0"></span>' : '<span class="w-1.5 h-1.5 rounded-full bg-slate-200 inline-block shrink-0"></span>'}
-              <span class="font-medium text-slate-700 text-xs">${name}</span>
+              ${isSelected ? '<span class="w-1.5 h-1.5 rounded-full bg-brand inline-block shrink-0"></span>' : '<span class="w-1.5 h-1.5 rounded-full bg-slate-200 dark:bg-[#3a3b4a] inline-block shrink-0"></span>'}
+              <span class="font-medium text-slate-700 dark:text-gray-200 text-xs">${name}</span>
             </div>
           </td>
-          <td class="font-mono text-xs text-slate-600">${inp}</td>
-          <td class="font-mono text-xs text-slate-600">${out}</td>
+          <td class="font-mono text-xs text-slate-600 dark:text-gray-400">${inp}</td>
+          <td class="font-mono text-xs text-slate-600 dark:text-gray-400">${out}</td>
         </tr>
       `;
     }).join('');
@@ -1129,13 +1198,13 @@
     if (apiKeyRevealed) {
       display.textContent = FAKE_API_KEY;
       eye.textContent = 'visibility_off';
-      display.classList.remove('text-slate-500');
-      display.classList.add('text-slate-800');
+      display.classList.remove('text-slate-500', 'dark:text-gray-400');
+      display.classList.add('text-slate-800', 'dark:text-gray-100');
     } else {
       display.textContent = 'sk-••••••••••••••••••••••••••••••••••';
       eye.textContent = 'visibility';
-      display.classList.add('text-slate-500');
-      display.classList.remove('text-slate-800');
+      display.classList.add('text-slate-500', 'dark:text-gray-400');
+      display.classList.remove('text-slate-800', 'dark:text-gray-100');
     }
   }
 
@@ -1197,10 +1266,10 @@
           <span class="material-symbols-outlined filled ${iconClass}" style="font-size:18px; shrink:0;">${icon}</span>
           <div class="flex-1 min-w-0">
             <div class="flex items-center justify-between gap-2">
-              <span class="font-mono text-xs font-semibold text-slate-700 truncate">${item.label}</span>
-              <span class="text-xs font-medium shrink-0 ${item.ok ? 'text-emerald-600' : (item.optional ? 'text-amber-500' : 'text-red-500')}">${statusText}</span>
+              <span class="font-mono text-xs font-semibold text-slate-700 dark:text-gray-200 truncate">${item.label}</span>
+              <span class="text-xs font-medium shrink-0 ${item.ok ? 'text-emerald-600 dark:text-emerald-400' : (item.optional ? 'text-amber-500 dark:text-amber-400' : 'text-red-500 dark:text-red-400')}">${statusText}</span>
             </div>
-            <p class="text-xs text-slate-400 mt-0.5">${item.desc}</p>
+            <p class="text-xs text-slate-400 dark:text-gray-500 mt-0.5">${item.desc}</p>
           </div>
         </div>
       `;
