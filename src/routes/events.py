@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import Any
 
-from fastapi import APIRouter, BackgroundTasks, HTTPException, Query
+from fastapi import APIRouter, BackgroundTasks, HTTPException, Query, Request
 
 from src.database import Database
 from src.delivery import process_event_delivery
@@ -17,15 +17,38 @@ def get_db() -> Database:
     return get_database()
 
 
+def _capture_request_meta(request: Request) -> dict:
+    """Capture the full HTTP request metadata — headers, method, URL, IP, etc."""
+    return {
+        "method": request.method,
+        "url": str(request.url),
+        "path": request.url.path,
+        "query_string": str(request.url.query) if request.url.query else None,
+        "client_ip": request.client.host if request.client else None,
+        "client_port": request.client.port if request.client else None,
+        "headers": dict(request.headers),
+        "content_type": request.headers.get("content-type"),
+        "content_length": request.headers.get("content-length"),
+        "user_agent": request.headers.get("user-agent"),
+        "http_version": request.scope.get("http_version"),
+        "scheme": request.url.scheme,
+    }
+
+
 @router.post("", response_model=dict[str, Any], status_code=201)
-async def ingest_event(event_data: EventCreate, background_tasks: BackgroundTasks):
+async def ingest_event(
+    event_data: EventCreate,
+    request: Request,
+    background_tasks: BackgroundTasks,
+):
     """Ingest a new event into the TriggersAPI.
 
     Accepts a JSON payload with event details, stores it with metadata,
     and returns a structured acknowledgment.
     """
     db = get_db()
-    event = db.create_event(event_data)
+    request_meta = _capture_request_meta(request)
+    event = db.create_event(event_data, request_meta=request_meta)
 
     # Trigger async delivery to matching subscriptions
     background_tasks.add_task(process_event_delivery, db, event)

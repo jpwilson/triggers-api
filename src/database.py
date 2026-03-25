@@ -45,7 +45,8 @@ class Database:
                     timestamp TEXT NOT NULL,
                     received_at TEXT NOT NULL,
                     delivered_at TEXT,
-                    retry_count INTEGER DEFAULT 0
+                    retry_count INTEGER DEFAULT 0,
+                    request_meta TEXT
                 );
 
                 CREATE INDEX IF NOT EXISTS idx_events_status ON events(status);
@@ -84,11 +85,20 @@ class Database:
                 CREATE INDEX IF NOT EXISTS idx_delivery_event ON delivery_attempts(event_id);
                 CREATE INDEX IF NOT EXISTS idx_delivery_sub ON delivery_attempts(subscription_id);
             """)
+            # Migrate: add request_meta column if missing (for existing DBs)
+            import contextlib
+
+            with contextlib.suppress(Exception):
+                conn.execute(
+                    "ALTER TABLE events ADD COLUMN request_meta TEXT"
+                )
             conn.commit()
         finally:
             conn.close()
 
-    def create_event(self, event_data: EventCreate) -> Event:
+    def create_event(
+        self, event_data: EventCreate, request_meta: dict | None = None
+    ) -> Event:
         event_id = f"evt_{uuid.uuid4().hex[:12]}"
         now = datetime.now(timezone.utc)
         timestamp = event_data.timestamp or now
@@ -101,14 +111,16 @@ class Database:
             status=EventStatus.ingested,
             timestamp=timestamp,
             received_at=now,
+            request_meta=request_meta,
         )
 
         conn = self._get_conn()
         try:
             conn.execute(
                 """INSERT INTO events
-                   (id, event_type, source, payload, status, timestamp, received_at)
-                   VALUES (?, ?, ?, ?, ?, ?, ?)""",
+                   (id, event_type, source, payload, status, timestamp,
+                    received_at, request_meta)
+                   VALUES (?, ?, ?, ?, ?, ?, ?, ?)""",
                 (
                     event.id,
                     event.event_type,
@@ -117,6 +129,7 @@ class Database:
                     event.status.value,
                     event.timestamp.isoformat(),
                     event.received_at.isoformat(),
+                    json.dumps(request_meta) if request_meta else None,
                 ),
             )
             conn.commit()
@@ -478,6 +491,13 @@ class Database:
     # --- Row converters ---
 
     def _row_to_event(self, row: sqlite3.Row) -> Event:
+        request_meta = None
+        try:
+            rm = row["request_meta"]
+            if rm:
+                request_meta = json.loads(rm)
+        except (KeyError, IndexError):
+            pass
         return Event(
             id=row["id"],
             event_type=row["event_type"],
@@ -490,6 +510,7 @@ class Database:
                 datetime.fromisoformat(row["delivered_at"]) if row["delivered_at"] else None
             ),
             retry_count=row["retry_count"],
+            request_meta=request_meta,
         )
 
     def _row_to_subscription(self, row: sqlite3.Row) -> Subscription:

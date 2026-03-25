@@ -728,7 +728,14 @@
         const latency = fakeLatency(e.id);
         const ts = fmtTimestamp(e.received_at || e.timestamp);
         const payloadJson = JSON.stringify(e.payload, null, 2);
+        const requestJson = e.request_meta ? JSON.stringify(e.request_meta, null, 2) : null;
+        const headersJson = e.request_meta && e.request_meta.headers ? JSON.stringify(e.request_meta.headers, null, 2) : null;
         const isOpen = openRows.has(e.id);
+
+        // Build request summary line
+        const reqSummary = e.request_meta
+          ? `${e.request_meta.method || 'POST'} ${e.request_meta.path || ''} — ${e.request_meta.client_ip || 'unknown'} — ${e.request_meta.user_agent || 'unknown'}`
+          : 'No request metadata captured';
 
         return `
           <tr
@@ -753,23 +760,62 @@
           <tr class="payload-row ${isOpen ? 'open' : ''}" data-payload-id="${e.id}">
             <td colspan="6" class="px-5 pb-4 pt-0 bg-gray-50 dark:bg-[#111219]">
               <div class="rounded-xl overflow-hidden border border-gray-200 dark:border-[#262733] shadow-inner">
-                <div class="flex items-center justify-between px-4 py-2 bg-[#1e1e2e] border-b border-[#313244]">
-                  <div class="flex items-center gap-2">
-                    <span class="material-symbols-outlined text-[14px] text-[#89b4fa]">data_object</span>
-                    <span class="text-xs text-[#cdd6f4] font-mono font-semibold">Event Payload</span>
-                    <span class="text-[11px] text-[#6c7086] font-mono">— ID: ${escHtml(e.id)}</span>
-                  </div>
-                  <button onclick="copyPayload(event, '${escAttr(payloadJson)}')" class="flex items-center gap-1 text-[11px] text-[#6c7086] hover:text-[#cdd6f4] transition">
+                <!-- Tabs -->
+                <div class="flex items-center bg-[#1e1e2e] border-b border-[#313244] px-4 py-0">
+                  <button onclick="event.stopPropagation(); switchDetailTab('${e.id}', 'payload')"
+                    class="detail-tab text-xs font-mono font-semibold px-3 py-2 border-b-2 transition-colors"
+                    data-tab="payload" data-event-id="${e.id}"
+                    style="border-color: #89b4fa; color: #cdd6f4;">
+                    <span class="material-symbols-outlined text-[14px] align-middle mr-1">data_object</span>Payload
+                  </button>
+                  <button onclick="event.stopPropagation(); switchDetailTab('${e.id}', 'headers')"
+                    class="detail-tab text-xs font-mono font-semibold px-3 py-2 border-b-2 transition-colors"
+                    data-tab="headers" data-event-id="${e.id}"
+                    style="border-color: transparent; color: #6c7086;">
+                    <span class="material-symbols-outlined text-[14px] align-middle mr-1">list_alt</span>Headers
+                  </button>
+                  <button onclick="event.stopPropagation(); switchDetailTab('${e.id}', 'request')"
+                    class="detail-tab text-xs font-mono font-semibold px-3 py-2 border-b-2 transition-colors"
+                    data-tab="request" data-event-id="${e.id}"
+                    style="border-color: transparent; color: #6c7086;">
+                    <span class="material-symbols-outlined text-[14px] align-middle mr-1">http</span>Full Request
+                  </button>
+                  <div class="flex-1"></div>
+                  <span class="text-[11px] text-[#6c7086] font-mono">ID: ${escHtml(e.id)}</span>
+                  <button onclick="copyPayload(event, '${escAttr(payloadJson)}')" class="flex items-center gap-1 text-[11px] text-[#6c7086] hover:text-[#cdd6f4] transition ml-3">
                     <span class="material-symbols-outlined text-[14px]">content_copy</span>
                     Copy
                   </button>
                 </div>
-                <pre class="code-block bg-[#1e1e2e] text-[#cdd6f4] text-xs font-mono px-4 py-3 overflow-x-auto leading-relaxed">${syntaxHighlight(payloadJson)}</pre>
+
+                <!-- Payload tab -->
+                <div class="detail-panel" data-panel="payload" data-event-id="${e.id}">
+                  <pre class="code-block bg-[#1e1e2e] text-[#cdd6f4] text-xs font-mono px-4 py-3 overflow-x-auto leading-relaxed">${syntaxHighlight(payloadJson)}</pre>
+                </div>
+
+                <!-- Headers tab -->
+                <div class="detail-panel" data-panel="headers" data-event-id="${e.id}" style="display:none;">
+                  ${headersJson
+                    ? `<pre class="code-block bg-[#1e1e2e] text-[#cdd6f4] text-xs font-mono px-4 py-3 overflow-x-auto leading-relaxed">${syntaxHighlight(headersJson)}</pre>`
+                    : `<div class="bg-[#1e1e2e] text-[#6c7086] text-xs font-mono px-4 py-4 text-center">No headers captured for this event.<br>Events ingested after this update will include full request headers.</div>`
+                  }
+                </div>
+
+                <!-- Full Request tab -->
+                <div class="detail-panel" data-panel="request" data-event-id="${e.id}" style="display:none;">
+                  ${requestJson
+                    ? `<pre class="code-block bg-[#1e1e2e] text-[#cdd6f4] text-xs font-mono px-4 py-3 overflow-x-auto leading-relaxed">${syntaxHighlight(requestJson)}</pre>`
+                    : `<div class="bg-[#1e1e2e] text-[#6c7086] text-xs font-mono px-4 py-4 text-center">No request metadata captured for this event.<br>Events ingested after this update will include full request details.</div>`
+                  }
+                </div>
+
+                <!-- Status bar -->
                 <div class="bg-[#181825] px-4 py-2 flex items-center gap-4 flex-wrap">
                   <span class="text-[11px] text-[#6c7086]">received_at: <span class="text-[#a6e3a1]">${escHtml(e.received_at || '')}</span></span>
                   <span class="text-[11px] text-[#6c7086]">status: <span class="text-[#fab387]">${escHtml(e.status)}</span></span>
                   ${e.retry_count > 0 ? `<span class="text-[11px] text-[#6c7086]">retries: <span class="text-[#f38ba8]">${e.retry_count}</span></span>` : ''}
                   ${e.delivered_at ? `<span class="text-[11px] text-[#6c7086]">delivered_at: <span class="text-[#a6e3a1]">${escHtml(e.delivered_at)}</span></span>` : ''}
+                  ${e.request_meta ? `<span class="text-[11px] text-[#6c7086]">from: <span class="text-[#89b4fa]">${escHtml(e.request_meta.client_ip || 'unknown')}</span></span>` : ''}
                 </div>
               </div>
             </td>
@@ -805,6 +851,26 @@
 
     function escAttr(str) {
       return String(str).replace(/\\/g, '\\\\').replace(/'/g, "\\'").replace(/\n/g, '\\n');
+    }
+
+    function switchDetailTab(eventId, tabName) {
+      // Hide all panels for this event
+      document.querySelectorAll(`.detail-panel[data-event-id="${eventId}"]`).forEach(p => {
+        p.style.display = 'none';
+      });
+      // Show selected panel
+      const panel = document.querySelector(`.detail-panel[data-panel="${tabName}"][data-event-id="${eventId}"]`);
+      if (panel) panel.style.display = '';
+      // Update tab styles
+      document.querySelectorAll(`.detail-tab[data-event-id="${eventId}"]`).forEach(t => {
+        if (t.dataset.tab === tabName) {
+          t.style.borderColor = '#89b4fa';
+          t.style.color = '#cdd6f4';
+        } else {
+          t.style.borderColor = 'transparent';
+          t.style.color = '#6c7086';
+        }
+      });
     }
 
     function syntaxHighlight(json) {

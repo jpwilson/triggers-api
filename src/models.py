@@ -31,6 +31,7 @@ class Event(BaseModel):
     received_at: datetime
     delivered_at: datetime | None = None
     retry_count: int = 0
+    request_meta: dict[str, Any] | None = None
 
 
 class EventAck(BaseModel):
